@@ -16,7 +16,7 @@ from fastapi.responses import JSONResponse
 
 templates = Jinja2Templates(directory="templates")
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "<your-openrouter-key>")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "<your-openrouter-api-key>")
 
 app = FastAPI()
 templates = Jinja2Templates(directory="backend/templates")
@@ -78,11 +78,6 @@ async def analyze_readmes(
         "token": token,
     })
 
-
-
-# You can store this in env var later
-OPENAI_API_KEY = "your-api-key"  # Replace this with your actual key
-openai.api_key = OPENAI_API_KEY
 
 @app.post("/extract-skills", response_class=HTMLResponse)
 async def extract_skills(request: Request):
@@ -227,35 +222,43 @@ async def suggest_skills(request: Request):
         "skills": extracted_skills
     })
 
-
 def extract_resources_from_gpt(content: str):
     """
-    Extracts skill and resource info even if GPT adds extra spacing or line breaks.
+    Parse GPT responses like:
+    Skill: Redis
+    Search: Redis Crash Course
     """
-    pattern = r"Skill\s*:\s*(.*?)\s*Resource\s*:\s*\[(.*?)\]\((.*?)\)"
+    pattern = r"Skill\s*:\s*(.*?)\s*Search\s*:\s*(.*?)\s*(?=\n|$)"
     matches = re.findall(pattern, content, re.DOTALL | re.IGNORECASE)
     resources = []
 
-    for skill, title, url in matches:
+    for skill, search in matches:
+        url = get_real_youtube_link(search)
         resources.append({
             "skill": skill.strip(),
-            "title": title.strip(),
-            "url": url.strip()
+            "title": search.strip(),
+            "url": url
         })
-    
-    if not resources:
-        print("⚠️ No skills extracted! GPT might have returned unexpected format.")
-        print("Raw GPT output:\n", content)
 
-    
-    print("🛠️ Parsed Resources:")
-    for res in resources:
-        print(res)
+    if not resources:
+        print("⚠️ No matches found.")
+        print("Raw GPT output:\n", content)
+    else:
+        print("✅ Parsed Skills:")
+        for res in resources:
+            print(res)
 
     return resources
 
-# Add custom filter to Jinja
-# ✅ 1. Define the filter function first
+def get_real_youtube_link(query: str):
+    search_url = f"https://www.youtube.com/results?search_query={query.replace(' ', '+')}"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    resp = requests.get(search_url, headers=headers)
+    match = re.search(r"watch\?v=([a-zA-Z0-9_-]{11})", resp.text)
+    if match:
+        return f"https://www.youtube.com/watch?v={match.group(1)}"
+    return ""
+
 def extract_youtube_id(url: str):
     if "youtu.be/" in url:
         return url.split("youtu.be/")[-1].split("?")[0]
@@ -265,9 +268,7 @@ def extract_youtube_id(url: str):
             return match.group(1)
     return ""
 
-# ✅ 2. Register it with Jinja
 templates.env.filters["youtube_id"] = extract_youtube_id
-
 
 @app.post("/match-jobs", response_class=HTMLResponse)
 async def match_jobs(request: Request):
