@@ -1,18 +1,13 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-import httpx
-from fastapi import Form
-from typing import List
 import os
-import httpx
-from fastapi import Request
-from fastapi.responses import HTMLResponse
 import re
 import json
+import httpx
 import requests
-import os
-from fastapi.responses import JSONResponse
+from typing import List
+from fastapi import Request
+from fastapi import FastAPI, Request, Form
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse, JSONResponse
 
 templates = Jinja2Templates(directory="templates")
 
