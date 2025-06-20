@@ -16,7 +16,7 @@ from fastapi.responses import JSONResponse
 
 templates = Jinja2Templates(directory="templates")
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "<your-openrouter-api-key>")
 
 app = FastAPI()
 templates = Jinja2Templates(directory="backend/templates")
