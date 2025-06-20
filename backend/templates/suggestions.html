@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Skill Suggestions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen py-10 px-4">
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
+      <h1 class="text-2xl font-bold text-blue-700 mb-4">
+        🚀 Skill Suggestions & Learning Resources
+      </h1>
+
+      {% if resources %}
+      <div class="space-y-6">
+        {% for item in resources %}
+        <div class="border border-gray-300 p-4 rounded bg-white shadow">
+          <h2 class="text-lg font-semibold text-blue-600">
+            🛠️ {{ item.skill }}
+          </h2>
+          <p class="text-sm text-gray-800">
+            ▶️
+            <a
+              href="{{ item.url }}"
+              class="text-indigo-600 underline"
+              target="_blank"
+              >{{ item.title }}</a
+            >
+          </p>
+
+          {% if "youtube.com" in item.url or "youtu.be" in item.url %} {% set
+          vid = item.url | youtube_id %} {% if vid and vid | length == 11 %}
+          <div class="mt-3">
+            <iframe
+              width="100%"
+              height="240"
+              class="rounded"
+              src="https://www.youtube.com/embed/{{ vid }}"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+          {% else %}
+          <div class="mt-3">
+            <iframe
+              width="100%"
+              height="240"
+              class="rounded"
+              src="https://www.youtube.com/embed/3c-iBn73dDE"
+              <!--
+              Docker
+              fallback
+              --
+            >
+              frameborder="0" allowfullscreen ></iframe
+            >
+            <p class="text-sm text-gray-500">🔁 Showing fallback preview</p>
+          </div>
+          {% endif %} {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-gray-500">⚠️ No suggestions available. Try again later.</p>
+      {% endif %}
+
+      <!-- 🔁 Job Matching Button -->
+      <form action="/match-jobs" method="post" class="mt-8">
+        <input type="hidden" name="username" value="{{ username }}">
+        <input type="hidden" name="token" value="{{ token }}">
+        <input type="hidden" name="skills" value="{{ skills }}">
+        <button class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded shadow">
+          🔎 Match with Job Roles
+        </button>
+      </form>
+      
+
+      <!-- 🔍 Debugging output (can be removed later) -->
+      {#
+      <pre class="text-xs text-gray-400 mt-4">{{ resources | safe }}</pre>
+      #}
+    </div>
+  </body>
+</html>

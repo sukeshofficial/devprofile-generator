@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Extracted Skills</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-10 px-4">
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
+    <h1 class="text-2xl font-bold text-blue-700 mb-6">Extracted Skills</h1>
+    
+    <div class="bg-gray-100 p-4 rounded text-gray-800 whitespace-pre-line">
+      {{ skills }}
+    </div>
+
+    <form action="/suggest-skills" method="post" class="mt-6">
+        <input type="hidden" name="username" value="{{ username }}">
+        <input type="hidden" name="token" value="{{ token }}">
+        <input type="hidden" name="skills" value="{{ skills }}">
+        <button class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+          Show Skill Suggestions
+        </button>
+    </form>
+      
+  </div>
+</body>
+</html>
