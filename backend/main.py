@@ -16,7 +16,7 @@ from fastapi.responses import JSONResponse
 
 templates = Jinja2Templates(directory="templates")
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "<your-openrouter-api-key>")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
 
 app = FastAPI()
 templates = Jinja2Templates(directory="backend/templates")
@@ -77,7 +77,6 @@ async def analyze_readmes(
         "username": username,
         "token": token,
     })
-
 
 @app.post("/extract-skills", response_class=HTMLResponse)
 async def extract_skills(request: Request):

@@ -7,12 +7,12 @@
   </head>
   <body class="bg-gray-100 min-h-screen py-10 px-4">
     <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow">
-      <h1 class="text-2xl font-bold text-blue-700 mb-6">
-        🎯 Job Roles Matched with Your Skills
+      <h1 class="text-2xl font-bold bg-white rounded-lg py-3 text-blue-700 mb-6 text-center">
+       Job Roles Matched with Your Skills
       </h1>
 
       {% if jobs %}
-        <div class="grid gap-6 md:grid-cols-2">
+        <div class="grid gap-6 md:grid-cols-2 cursor-pointer">
           {% for job in jobs %}
             <div class="border border-gray-300 rounded-lg bg-white shadow-md p-5 hover:shadow-xl transition-all duration-300">
               <div class="flex items-center justify-between mb-4">
