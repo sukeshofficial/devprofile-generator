@@ -23,9 +23,7 @@ async def homepage(request: Request):
 
 
 @app.post("/fetch-profile", response_class=HTMLResponse)
-async def fetch_profile(
-    request: Request, username: str = Form(...), token: str = Form(...)
-):
+async def fetch_profile(request: Request, username: str = Form(...), token: str = Form(...)):
     headers = {"Authorization": f"token {token}"}
     async with httpx.AsyncClient() as client:
         profile_resp = await client.get(
