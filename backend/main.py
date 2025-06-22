@@ -373,3 +373,4 @@ async def match_jobs(request: Request):
     return templates.TemplateResponse(
         "jobmatch.html", {"request": request, "jobs": jobs, "username": username}
     )
+
