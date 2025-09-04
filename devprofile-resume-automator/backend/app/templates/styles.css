@@ -1,0 +1,156 @@
+/* ATS-friendly resume styles for PDF generation */
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #333333;
+    background: white;
+    max-width: 8.5in;
+    margin: 0 auto;
+    padding: 0.5in;
+}
+
+/* Header styles */
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333333;
+    padding-bottom: 10px;
+}
+
+.name {
+    font-size: 24pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #000000;
+}
+
+.contact {
+    font-size: 10pt;
+    color: #666666;
+    line-height: 1.2;
+}
+
+/* Section styles */
+.section {
+    margin-bottom: 20px;
+    page-break-inside: avoid;
+}
+
+.section-title {
+    font-size: 14pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid #333333;
+    margin-bottom: 10px;
+    padding-bottom: 2px;
+    color: #000000;
+}
+
+/* Project styles */
+.project {
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+}
+
+.project-title {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #000000;
+}
+
+/* Bullet point styles */
+.bullet {
+    margin-left: 15px;
+    margin-bottom: 3px;
+    position: relative;
+    text-align: justify;
+}
+
+.bullet:before {
+    content: "•";
+    position: absolute;
+    left: -15px;
+    color: #333333;
+}
+
+/* Skills grid */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.skill-item {
+    font-size: 10pt;
+    padding: 2px 0;
+    color: #333333;
+}
+
+/* Summary styles */
+.summary {
+    text-align: justify;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+/* Print-specific styles */
+@media print {
+    body {
+        margin: 0;
+        padding: 0.5in;
+        font-size: 10pt;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+    }
+    
+    .project {
+        page-break-inside: avoid;
+    }
+}
+
+/* Ensure ATS compatibility */
+.no-graphics {
+    /* Avoid graphics, images, or complex layouts */
+    background: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+/* Simple table styles for compatibility */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+td, th {
+    padding: 3px 5px;
+    text-align: left;
+    border: none;
+    vertical-align: top;
+}
+
+/* Links should be readable in print */
+a {
+    color: #333333;
+    text-decoration: none;
+}
+
+/* Ensure good contrast */
+.high-contrast {
+    color: #000000;
+    background: #ffffff;
+}
