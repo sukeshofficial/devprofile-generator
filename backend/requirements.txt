@@ -1,5 +1,0 @@
-fastapi
-uvicorn
-jinja2
-httpx
-python-multipart  # For form handling
