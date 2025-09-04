@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}DevProfile Generator - AI-Powered GitHub Analysis{% endblock %}
+
+{% block content %}
+<div class="relative overflow-hidden">
+    <!-- Hero Section -->
+    <div class="gradient-bg relative">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-in">
+                    Transform Your GitHub Into
+                    <span class="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                        Career Opportunities
+                    </span>
+                </h1>
+                <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto animate-slide-up">
+                    AI-powered analysis of your repositories to extract skills, suggest improvements, 
+                    and match you with perfect job opportunities.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 text-white/80 animate-slide-up">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-robot"></i>
+                        <span>AI-Powered Analysis</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Skill Extraction</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Job Matching</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form Section -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-12 animate-slide-up">
+            {% if error %}
+            <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded-r-lg animate-fade-in">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-red-700">{{ error }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Get Started</h2>
+                <p class="text-gray-600">Connect your GitHub account to begin the analysis</p>
+            </div>
+
+            <!-- GitHub Form -->
+            <form action="/fetch-profile" method="post" class="space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            <i class="fab fa-github mr-2"></i>GitHub Username
+                        </label>
+                        <input
+                            type="text"
+                            name="username"
+                            required
+                            placeholder="Enter your GitHub username"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                        />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-key mr-2"></i>GitHub Personal Access Token
+                        </label>
+                        <input
+                            type="password"
+                            name="token"
+                            required
+                            placeholder="ghp_xxxxxxxxxxxx"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                        />
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                        <div class="text-sm text-blue-700">
+                            <p class="font-medium mb-1">Need a GitHub token?</p>
+                            <p>Go to GitHub Settings → Developer settings → Personal access tokens → Generate new token. 
+                            Select "repo" scope for private repositories or "public_repo" for public ones.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-primary-700 hover:to-secondary-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
+                    <i class="fas fa-rocket mr-2"></i>
+                    Analyze My GitHub Profile
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if profile %}
+    <!-- Profile Section -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <div class="bg-white rounded-2xl shadow-xl p-8 animate-fade-in">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <i class="fas fa-user-circle text-primary-600 mr-3"></i>
+                GitHub Profile
+            </h2>
+            
+            <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 mb-8">
+                <img
+                    src="{{ profile.avatar_url }}"
+                    alt="Profile Picture"
+                    class="w-24 h-24 rounded-full border-4 border-primary-200 shadow-lg"
+                />
+                <div class="flex-1">
+                    <h3 class="text-2xl font-bold text-gray-900">{{ profile.name or profile.login }}</h3>
+                    <p class="text-gray-600 mt-1">{{ profile.bio or "No bio available." }}</p>
+                    <div class="flex flex-wrap gap-4 mt-3 text-sm text-gray-500">
+                        <span class="flex items-center">
+                            <i class="fas fa-code-branch mr-1"></i>
+                            {{ profile.public_repos }} repositories
+                        </span>
+                        {% if profile.followers %}
+                        <span class="flex items-center">
+                            <i class="fas fa-users mr-1"></i>
+                            {{ profile.followers }} followers
+                        </span>
+                        {% endif %}
+                        {% if profile.location %}
+                        <span class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
+                            {{ profile.location }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Repository Grid -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-folder text-primary-600 mr-2"></i>
+                    Your Repositories
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for repo in repos[:6] %}
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:bg-gray-100 transition-colors">
+                        <h4 class="font-medium text-gray-900 mb-1">{{ repo.name }}</h4>
+                        <p class="text-sm text-gray-600 mb-2">{{ repo.description or "No description" }}</p>
+                        {% if repo.language %}
+                        <span class="inline-block bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">
+                            {{ repo.language }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if repos|length > 6 %}
+                <p class="text-sm text-gray-500 mt-4 text-center">
+                    And {{ repos|length - 6 }} more repositories...
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Repository Selection -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <form action="/analyze-readmes" method="post" class="space-y-6">
+                <input type="hidden" name="username" value="{{ profile.login }}" />
+                <input type="hidden" name="token" value="{{ token }}" />
+
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Select Repositories to Analyze</h3>
+                    <p class="text-gray-600">Choose the repositories you'd like us to analyze for skill extraction</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for repo in repos %}
+                    <label class="relative cursor-pointer">
+                        <input
+                            type="checkbox"
+                            name="selected_repos"
+                            value="{{ repo.name }}"
+                            class="sr-only peer"
+                        />
+                        <div class="border-2 border-gray-200 rounded-lg p-4 peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:border-gray-300 transition-all duration-200 card-hover">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-medium text-gray-900">{{ repo.name }}</h4>
+                                <div class="w-5 h-5 border-2 border-gray-300 rounded peer-checked:border-primary-500 peer-checked:bg-primary-500 flex items-center justify-center">
+                                    <i class="fas fa-check text-white text-xs opacity-0 peer-checked:opacity-100"></i>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">{{ repo.description or "No description available" }}</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                {% if repo.language %}
+                                <span class="bg-gray-100 px-2 py-1 rounded">{{ repo.language }}</span>
+                                {% endif %}
+                                <span class="flex items-center">
+                                    <i class="fas fa-star mr-1"></i>{{ repo.stargazers_count or 0 }}
+                                </span>
+                            </div>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <div class="text-center">
+                    <button
+                        type="submit"
+                        class="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 px-8 rounded-lg font-semibold text-lg hover:from-green-700 hover:to-emerald-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
+                        <i class="fas fa-search mr-2"></i>
+                        Analyze Selected Repositories
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Features Section -->
+    {% if not profile %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Our AI-powered platform analyzes your GitHub repositories to unlock career insights
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center card-hover bg-white rounded-xl p-8 shadow-lg">
+                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-code text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Analyze Repositories</h3>
+                <p class="text-gray-600">
+                    Connect your GitHub and select repositories for our AI to analyze your README files and extract technical skills.
+                </p>
+            </div>
+
+            <div class="text-center card-hover bg-white rounded-xl p-8 shadow-lg">
+                <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-lightbulb text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Get Suggestions</h3>
+                <p class="text-gray-600">
+                    Receive personalized learning recommendations with curated YouTube tutorials to fill skill gaps.
+                </p>
+            </div>
+
+            <div class="text-center card-hover bg-white rounded-xl p-8 shadow-lg">
+                <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-briefcase text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Match Jobs</h3>
+                <p class="text-gray-600">
+                    Discover job opportunities that perfectly match your skillset with company insights and role descriptions.
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

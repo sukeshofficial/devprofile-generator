@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Skill Suggestions - DevProfile Generator{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+            <i class="fas fa-graduation-cap text-primary-600 mr-3"></i>
+            Skill Enhancement Suggestions
+        </h1>
+        <p class="text-xl text-gray-600">
+            Personalized learning recommendations to boost your career
+        </p>
+    </div>
+
+    <!-- Current Skills Summary -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+            Your Current Skills
+        </h2>
+        <div class="bg-green-50 rounded-lg p-4">
+            <div class="text-sm text-green-800 whitespace-pre-line">{{ skills }}</div>
+        </div>
+    </div>
+
+    {% if resources %}
+    <!-- Learning Resources -->
+    <div class="space-y-8 mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 text-center mb-8">
+            Recommended Skills to Learn
+        </h2>
+        
+        <div class="grid gap-8">
+            {% for item in resources %}
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden card-hover animate-fade-in">
+                <div class="bg-gradient-to-r from-primary-600 to-secondary-600 px-6 py-4">
+                    <h3 class="text-2xl font-bold text-white flex items-center">
+                        <i class="fas fa-tools mr-3"></i>
+                        {{ item.skill }}
+                    </h3>
+                </div>
+                
+                <div class="p-6">
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                            <i class="fab fa-youtube text-red-500 mr-2"></i>
+                            Recommended Tutorial
+                        </h4>
+                        <a href="{{ item.url }}" 
+                           target="_blank" 
+                           class="text-primary-600 hover:text-primary-700 font-medium text-lg underline decoration-2 underline-offset-2 hover:decoration-primary-700 transition-colors">
+                            {{ item.title }}
+                        </a>
+                    </div>
+
+                    {% if "youtube.com" in item.url or "youtu.be" in item.url %}
+                        {% set vid = item.url | youtube_id %}
+                        {% if vid and vid | length == 11 %}
+                        <div class="relative rounded-xl overflow-hidden shadow-lg">
+                            <iframe
+                                width="100%"
+                                height="400"
+                                src="https://www.youtube.com/embed/{{ vid }}"
+                                frameborder="0"
+                                allowfullscreen
+                                class="w-full"
+                            ></iframe>
+                        </div>
+                        {% else %}
+                        <div class="relative rounded-xl overflow-hidden shadow-lg">
+                            <iframe
+                                width="100%"
+                                height="400"
+                                src="https://www.youtube.com/embed/3c-iBn73dDE"
+                                frameborder="0"
+                                allowfullscreen
+                                class="w-full"
+                            ></iframe>
+                            <div class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-lg text-sm">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Fallback preview
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <!-- Learning Path -->
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
+                            <i class="fas fa-route text-primary-600 mr-2"></i>
+                            Why Learn {{ item.skill }}?
+                        </h5>
+                        <p class="text-gray-700 text-sm">
+                            This skill will enhance your development capabilities and make you more competitive in the job market.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <!-- No Suggestions -->
+    <div class="bg-white rounded-2xl shadow-lg p-12 text-center">
+        <i class="fas fa-search text-gray-400 text-6xl mb-6"></i>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">No Suggestions Available</h2>
+        <p class="text-gray-600 mb-6">
+            We couldn't generate skill suggestions at this time. This might be due to API limitations or processing issues.
+        </p>
+        <button onclick="window.history.back()" 
+                class="bg-primary-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-700 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Go Back and Try Again
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="bg-white rounded-2xl shadow-xl p-8">
+        <div class="text-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Ready for the Next Step?</h3>
+            <p class="text-gray-600">Discover job opportunities that match your skillset</p>
+        </div>
+
+        <div class="space-y-4">
+            <form action="/match-jobs" method="post">
+                <input type="hidden" name="username" value="{{ username }}">
+                <input type="hidden" name="token" value="{{ token }}">
+                <input type="hidden" name="skills" value="{{ skills }}">
+                
+                <button class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-purple-700 hover:to-pink-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <i class="fas fa-briefcase mr-2"></i>
+                    Find Matching Job Opportunities
+                </button>
+            </form>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="window.history.back()" 
+                        class="bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Skills
+                </button>
+                <button onclick="window.print()" 
+                        class="bg-blue-100 text-blue-700 py-3 px-6 rounded-lg font-medium hover:bg-blue-200 transition-colors">
+                    <i class="fas fa-download mr-2"></i>
+                    Save Suggestions
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Learning Tips -->
+    <div class="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-8">
+        <h3 class="text-xl font-bold text-gray-900 mb-6 text-center">
+            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+            Learning Tips for Success
+        </h3>
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <i class="fas fa-clock text-blue-600 mr-3 mt-1"></i>
+                    <div>
+                        <h4 class="font-semibold text-gray-900">Set Learning Goals</h4>
+                        <p class="text-gray-700 text-sm">Dedicate 30-60 minutes daily to learning new skills</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-project-diagram text-green-600 mr-3 mt-1"></i>
+                    <div>
+                        <h4 class="font-semibold text-gray-900">Build Projects</h4>
+                        <p class="text-gray-700 text-sm">Apply what you learn by building real-world projects</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <i class="fas fa-users text-purple-600 mr-3 mt-1"></i>
+                    <div>
+                        <h4 class="font-semibold text-gray-900">Join Communities</h4>
+                        <p class="text-gray-700 text-sm">Connect with other developers learning the same skills</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-certificate text-orange-600 mr-3 mt-1"></i>
+                    <div>
+                        <h4 class="font-semibold text-gray-900">Get Certified</h4>
+                        <p class="text-gray-700 text-sm">Consider getting certifications to validate your skills</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

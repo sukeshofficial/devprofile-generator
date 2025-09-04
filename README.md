@@ -91,6 +91,8 @@ devprofile-project/
 ## 📬 Author
 
 Made by 
-- [Sukesh](https://github.com/sukeshofficial) 
+- [Sukesh](https://github.com/sukeshofficial)
+- [Mahima](https://github.com/mahima-jayshri)    
+- [Davidson](https://github.com/Davidson-T)    
 
 Feel free to ⭐️ the repo if it helped you!

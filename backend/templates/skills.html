@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Extracted Skills - DevProfile Generator{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+            <i class="fas fa-cogs text-primary-600 mr-3"></i>
+            Your Technical Skills
+        </h1>
+        <p class="text-xl text-gray-600">
+            AI-extracted skills from your GitHub repositories
+        </p>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="mb-12">
+        <div class="flex items-center justify-center space-x-4">
+            <div class="flex items-center">
+                <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    <i class="fas fa-check"></i>
+                </div>
+                <span class="ml-2 text-sm font-medium text-gray-900">Repository Selection</span>
+            </div>
+            <div class="w-16 h-1 bg-primary-600 rounded"></div>
+            <div class="flex items-center">
+                <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    <i class="fas fa-check"></i>
+                </div>
+                <span class="ml-2 text-sm font-medium text-gray-900">README Analysis</span>
+            </div>
+            <div class="w-16 h-1 bg-primary-600 rounded"></div>
+            <div class="flex items-center">
+                <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    3
+                </div>
+                <span class="ml-2 text-sm font-medium text-primary-600">Skill Extraction</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Display -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 animate-fade-in">
+        <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mr-4">
+                <i class="fas fa-check text-white text-xl"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Extracted Skills</h2>
+                <p class="text-gray-600">Technologies and tools identified from your projects</p>
+            </div>
+        </div>
+        
+        <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-6 border border-gray-200">
+            {% if skills %}
+                {% set skill_lines = skills.split('\n') %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {% for line in skill_lines %}
+                        {% if line.strip() and line.strip().startswith('-') %}
+                        <div class="flex items-center space-x-3 bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="w-2 h-2 bg-primary-500 rounded-full"></div>
+                            <span class="text-gray-800 font-medium">{{ line.strip()[1:].strip() }}</span>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-600">No skills were extracted. This might happen if the README files don't contain clear technical information.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Raw Output (for debugging) -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <details class="group">
+            <summary class="cursor-pointer flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                <span class="font-medium text-gray-700">View Raw AI Output</span>
+                <i class="fas fa-chevron-down group-open:rotate-180 transition-transform text-gray-400"></i>
+            </summary>
+            <div class="mt-4 bg-gray-50 rounded-lg p-4">
+                <pre class="text-sm text-gray-700 whitespace-pre-wrap">{{ skills }}</pre>
+            </div>
+        </details>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="space-y-4">
+        <form action="/suggest-skills" method="post">
+            <input type="hidden" name="username" value="{{ username }}">
+            <input type="hidden" name="token" value="{{ token }}">
+            <input type="hidden" name="skills" value="{{ skills }}">
+            
+            <button class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-green-700 hover:to-emerald-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl">
+                <i class="fas fa-lightbulb mr-2"></i>
+                Get Skill Improvement Suggestions
+            </button>
+        </form>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onclick="window.history.back()" 
+                    class="bg-gray-100 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Go Back
+            </button>
+            <button onclick="window.print()" 
+                    class="bg-blue-100 text-blue-700 py-3 px-6 rounded-lg font-medium hover:bg-blue-200 transition-colors">
+                <i class="fas fa-print mr-2"></i>
+                Print Skills
+            </button>
+        </div>
+    </div>
+
+    <!-- Tips Section -->
+    <div class="mt-12 bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <h3 class="text-lg font-semibold text-blue-900 mb-3 flex items-center">
+            <i class="fas fa-info-circle mr-2"></i>
+            Tips for Better Results
+        </h3>
+        <ul class="space-y-2 text-blue-800">
+            <li class="flex items-start">
+                <i class="fas fa-check text-blue-600 mr-2 mt-1"></i>
+                <span>Ensure your README files contain clear descriptions of technologies used</span>
+            </li>
+            <li class="flex items-start">
+                <i class="fas fa-check text-blue-600 mr-2 mt-1"></i>
+                <span>Include installation instructions and dependencies in your projects</span>
+            </li>
+            <li class="flex items-start">
+                <i class="fas fa-check text-blue-600 mr-2 mt-1"></i>
+                <span>Add badges and tech stack sections to make skills more visible</span>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

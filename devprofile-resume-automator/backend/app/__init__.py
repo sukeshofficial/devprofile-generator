@@ -1,1 +1,0 @@
-"""DevProfile Backend Application Package"""
