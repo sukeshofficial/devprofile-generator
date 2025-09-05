@@ -76,6 +76,78 @@
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
+        
+        /* Dark mode styles */
+        .dark {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        
+        .dark .bg-white {
+            background-color: #2d3748;
+        }
+        
+        .dark .text-gray-900 {
+            color: #e2e8f0;
+        }
+        
+        .dark .text-gray-600 {
+            color: #a0aec0;
+        }
+        
+        .dark .text-gray-500 {
+            color: #718096;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #4a5568;
+        }
+        
+        .dark .bg-gray-100 {
+            background-color: #4a5568;
+        }
+        
+        .dark .bg-gray-50 {
+            background-color: #2d3748;
+        }
+        
+        .dark .bg-gradient-to-br {
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        }
+        
+        /* Skill progress bars */
+        .skill-progress {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 10px;
+            height: 8px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Interactive charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        /* Loading animations */
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Pulse animation for loading states */
+        .pulse-loading {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
@@ -92,6 +164,9 @@
                     </h1>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                        <i class="fas fa-moon text-gray-600"></i>
+                    </button>
                     <a href="https://github.com/sukeshofficial/devprofile-project" target="_blank" 
                        class="text-gray-600 hover:text-primary-600 transition-colors">
                         <i class="fab fa-github text-xl"></i>
@@ -110,27 +185,45 @@
     <footer class="bg-white/80 backdrop-blur-md border-t border-gray-200 mt-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center">
-<<<<<<< HEAD
                 <p class="text-gray-600 mb-4">Made by</p>
-=======
-                <p class="text-gray-600 mb-4">Made with ❤️ by</p>
->>>>>>> 4d37fd9b1ece33be313816acc6174c7586c4ef02
                 <div class="flex justify-center space-x-6">
                     <a href="https://github.com/sukeshofficial" target="_blank" 
                        class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
                         Sukesh
                     </a>
-                    <a href="https://github.com/mahima-jayshri" target="_blank" 
+                    <a href="https://github.com/Veraadithya" target="_blank" 
                        class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                        Mahima
-                    </a>
-                    <a href="https://github.com/Davidson-T" target="_blank" 
-                       class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                        Davidson
+                        VeraAdithya
                     </a>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- Dark Mode Script -->
+    <script>
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        
+        // Check for saved dark mode preference
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        if (darkMode) {
+            body.classList.add('dark');
+            darkModeToggle.innerHTML = '<i class="fas fa-sun text-yellow-500"></i>';
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            const isDark = body.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            
+            if (isDark) {
+                darkModeToggle.innerHTML = '<i class="fas fa-sun text-yellow-500"></i>';
+            } else {
+                darkModeToggle.innerHTML = '<i class="fas fa-moon text-gray-600"></i>';
+            }
+        });
+    </script>
 </body>
 </html>

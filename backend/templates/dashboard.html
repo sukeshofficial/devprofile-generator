@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - DevProfile Generator{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <img src="{{ user.avatar_url or '/static/default-avatar.png' }}" alt="Profile" class="w-10 h-10 rounded-full">
+                    <div>
+                        <h1 class="text-xl font-semibold text-gray-900">{{ user.full_name or user.username }}</h1>
+                        <p class="text-sm text-gray-500">{{ user.email }}</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
+                        <i class="fas fa-moon text-gray-600"></i>
+                    </button>
+                    <a href="/" class="text-gray-600 hover:text-gray-900 transition-colors">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <form action="/auth/logout" method="post" class="inline">
+                        <button type="submit" class="text-red-600 hover:text-red-800 transition-colors">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome back, {{ user.username }}!</h2>
+                    <p class="text-gray-600">Manage your analyses and track your progress</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-bold text-blue-600">{{ analyses|length }}</div>
+                    <div class="text-sm text-gray-500">Total Analyses</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="startNewAnalysis()">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-plus text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">New Analysis</h3>
+                        <p class="text-gray-500 text-sm">Analyze your GitHub profile</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="viewPortfolio()">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-globe text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">View Portfolio</h3>
+                        <p class="text-gray-500 text-sm">See your public profile</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow cursor-pointer" onclick="exportData()">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-download text-purple-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Export Data</h3>
+                        <p class="text-gray-500 text-sm">Download your analyses</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Analyses -->
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">Recent Analyses</h3>
+                <button class="text-blue-600 hover:text-blue-800 font-medium" onclick="viewAllAnalyses()">
+                    View All <i class="fas fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+            
+            {% if analyses %}
+            <div class="space-y-4">
+                {% for analysis in analyses[:5] %}
+                <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-gray-900">{{ analysis.github_username }}</h4>
+                            <p class="text-gray-500 text-sm">{{ analysis.created_at[:10] }}</p>
+                            <div class="flex items-center space-x-4 mt-2">
+                                <span class="text-sm text-gray-600">
+                                    <i class="fas fa-code mr-1"></i>{{ analysis.selected_repos|length }} repos
+                                </span>
+                                <span class="text-sm text-gray-600">
+                                    <i class="fas fa-cogs mr-1"></i>{{ analysis.extracted_skills|length }} skills
+                                </span>
+                                <span class="text-sm text-gray-600">
+                                    <i class="fas fa-briefcase mr-1"></i>{{ analysis.job_matches|length }} job matches
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="viewAnalysis('{{ analysis.id }}')" 
+                                    class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors">
+                                <i class="fas fa-eye mr-1"></i>View
+                            </button>
+                            <button onclick="exportAnalysis('{{ analysis.id }}')" 
+                                    class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors">
+                                <i class="fas fa-download mr-1"></i>Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <i class="fas fa-chart-line text-gray-400 text-6xl mb-4"></i>
+                <h4 class="text-xl font-semibold text-gray-600 mb-2">No analyses yet</h4>
+                <p class="text-gray-500 mb-6">Start by analyzing your GitHub profile to see your skills and career opportunities</p>
+                <button onclick="startNewAnalysis()" 
+                        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Start New Analysis
+                </button>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Skills Overview -->
+        {% if analyses %}
+        <div class="mt-8 bg-white rounded-2xl shadow-xl p-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Skills Overview</h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Skills Chart Placeholder -->
+                <div class="lg:col-span-2">
+                    <div class="bg-gray-50 rounded-lg p-6 h-64 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-chart-radar text-gray-400 text-4xl mb-2"></i>
+                            <p class="text-gray-500">Skills radar chart will be displayed here</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top Skills -->
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Top Skills</h4>
+                    <div class="space-y-2">
+                        {% set all_skills = [] %}
+                        {% for analysis in analyses %}
+                            {% for skill in analysis.extracted_skills %}
+                                {% set _ = all_skills.append(skill) %}
+                            {% endfor %}
+                        {% endfor %}
+                        
+                        {% set skill_counts = {} %}
+                        {% for skill in all_skills %}
+                            {% set skill_name = skill.name if skill is mapping else skill %}
+                            {% set _ = skill_counts.update({skill_name: skill_counts.get(skill_name, 0) + 1}) %}
+                        {% endfor %}
+                        
+                        {% for skill, count in skill_counts.items()[:5] %}
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700">{{ skill }}</span>
+                            <div class="flex items-center">
+                                <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: {{ (count / analyses|length * 100)|round }}%"></div>
+                                </div>
+                                <span class="text-sm text-gray-500">{{ count }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Dark Mode Script -->
+<script>
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+    
+    // Check for saved dark mode preference
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+        body.classList.add('dark');
+        darkModeToggle.innerHTML = '<i class="fas fa-sun text-yellow-500"></i>';
+    }
+    
+    darkModeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark');
+        const isDark = body.classList.contains('dark');
+        localStorage.setItem('darkMode', isDark);
+        
+        if (isDark) {
+            darkModeToggle.innerHTML = '<i class="fas fa-sun text-yellow-500"></i>';
+        } else {
+            darkModeToggle.innerHTML = '<i class="fas fa-moon text-gray-600"></i>';
+        }
+    });
+    
+    // Navigation functions
+    function startNewAnalysis() {
+        window.location.href = '/';
+    }
+    
+    function viewPortfolio() {
+        // Implement portfolio view
+        alert('Portfolio view coming soon!');
+    }
+    
+    function exportData() {
+        // Implement data export
+        alert('Data export coming soon!');
+    }
+    
+    function viewAnalysis(analysisId) {
+        // Implement analysis view
+        alert(`Viewing analysis ${analysisId}`);
+    }
+    
+    function exportAnalysis(analysisId) {
+        // Implement analysis export
+        alert(`Exporting analysis ${analysisId}`);
+    }
+    
+    function viewAllAnalyses() {
+        // Implement view all analyses
+        alert('View all analyses coming soon!');
+    }
+</script>
+
+<!-- Dark Mode Styles -->
+<style>
+    .dark {
+        background-color: #1a202c;
+        color: #e2e8f0;
+    }
+    
+    .dark .bg-white {
+        background-color: #2d3748;
+    }
+    
+    .dark .text-gray-900 {
+        color: #e2e8f0;
+    }
+    
+    .dark .text-gray-600 {
+        color: #a0aec0;
+    }
+    
+    .dark .text-gray-500 {
+        color: #718096;
+    }
+    
+    .dark .border-gray-200 {
+        border-color: #4a5568;
+    }
+    
+    .dark .bg-gray-100 {
+        background-color: #4a5568;
+    }
+    
+    .dark .bg-gray-50 {
+        background-color: #2d3748;
+    }
+</style>
+{% endblock %}
