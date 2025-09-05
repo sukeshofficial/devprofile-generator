@@ -1,6 +1,7 @@
 import os
 import re
 import json
+from dotenv import load_dotenv
 import httpx
 import requests
 from typing import List, Optional
@@ -20,7 +21,9 @@ from database import db, cache_service
 from github_oauth import github_oauth
 from pdf_service import pdf_service
 from portfolio_service import portfolio_service
+from dotenv import load_dotenv
 
+load_dotenv()
 # Initialize FastAPI application
 app = FastAPI()
 
@@ -30,16 +33,16 @@ template_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=template_dir)
 
 # Get OpenRouter API key from environment variables
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
 
 # Validate environment variables on startup
 def validate_environment():
     """Validate required environment variables and configuration."""
-    if OPENROUTER_API_KEY == "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":
+    if OPENROUTER_API_KEY == "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":
+        print("✅ OpenRouter API key configured")
+    else:
         print("⚠️  WARNING: OPENROUTER_API_KEY not set. AI features will not work.")
         print("   Set it with: export OPENROUTER_API_KEY='your-key-here'")
-    else:
-        print("✅ OpenRouter API key configured")
 
 # Run validation on startup
 validate_environment()
@@ -247,7 +250,7 @@ async def extract_skills(request: Request):
         print("------ END ------")
 
         # Validate API key
-        if OPENROUTER_API_KEY == "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":
+        if not OPENROUTER_API_KEY:
             return templates.TemplateResponse(
                 "skills.html",
                 {
@@ -260,25 +263,22 @@ async def extract_skills(request: Request):
 
         # Prepare AI prompt for skill extraction
         messages = [
-            {"role": "system", "content": "You are a resume analyzer that extracts technical skills from project documentation."},
+            {"role": "system", "content": "You are an assistant that extracts only technical skills from README files."},
             {
                 "role": "user",
-                "content": f"""Extract only the **technical skills** from the following README files.
+                "content": f"""
+                Extract the technical skills (languages, frameworks, tools, libraries) from the README content below.
+                Return them as a **JSON array of strings**, nothing else.
 
-                        ✅ Return just a plain bullet list with no headings or descriptions.
-                        ✅ Do not include categories or explanations.
-                        ✅ Only include technologies, tools, libraries, languages, frameworks.
+                Example:
+                ["Python", "FastAPI", "Git"]
 
-                        Here is the content:
-                        {combined_readmes}
-
-                        🎯 Format:
-                        - Python
-                        - FastAPI
-                        - Git
-                        """,
+                README content:
+                {combined_readmes}
+                """
             },
         ]
+
 
         # Make request to OpenRouter API
         async with httpx.AsyncClient(timeout=60.0) as client:
@@ -406,7 +406,7 @@ async def suggest_skills(request: Request):
             )
 
         # Validate API key
-        if OPENROUTER_API_KEY == "<your-openrouter-api-key>":
+        if OPENROUTER_API_KEY == "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":
             return templates.TemplateResponse(
                 "suggestions.html",
                 {
@@ -666,7 +666,7 @@ async def match_jobs(request: Request):
             )
 
         # Validate API key
-        if OPENROUTER_API_KEY == "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":
+        if OPENROUTER_API_KEY == "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":
             return templates.TemplateResponse(
                 "jobmatch.html", 
                 {
@@ -878,8 +878,9 @@ async def login_user(request: Request, email: str = Form(...), password: str = F
 @app.get("/auth/github")
 async def github_login():
     """Initiate GitHub OAuth flow"""
+    from fastapi.responses import RedirectResponse
     auth_url = github_oauth.get_authorization_url()
-    return {"auth_url": auth_url}
+    return RedirectResponse(url=auth_url)
 
 @app.get("/auth/github/callback")
 async def github_callback(request: Request, code: str = None, state: str = None):
