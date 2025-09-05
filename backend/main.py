@@ -33,12 +33,12 @@ template_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=template_dir)
 
 # Get OpenRouter API key from environment variables
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "<your_openrouter_api_key>")
 
 # Validate environment variables on startup
 def validate_environment():
     """Validate required environment variables and configuration."""
-    if OPENROUTER_API_KEY == "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":
+    if OPENROUTER_API_KEY == "<your_openrouter_api_key>":
         print("✅ OpenRouter API key configured")
     else:
         print("⚠️  WARNING: OPENROUTER_API_KEY not set. AI features will not work.")
@@ -406,7 +406,7 @@ async def suggest_skills(request: Request):
             )
 
         # Validate API key
-        if OPENROUTER_API_KEY == "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":
+        if OPENROUTER_API_KEY == "<your_openrouter_api_key>":
             return templates.TemplateResponse(
                 "suggestions.html",
                 {
@@ -666,7 +666,7 @@ async def match_jobs(request: Request):
             )
 
         # Validate API key
-        if OPENROUTER_API_KEY == "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":
+        if OPENROUTER_API_KEY == "<your_openrouter_api_key>":
             return templates.TemplateResponse(
                 "jobmatch.html", 
                 {
