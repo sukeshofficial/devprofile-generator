@@ -179,7 +179,6 @@ Open your browser at: [http://localhost:8000](http://localhost:8000)
 
 Made by 
 - [Sukesh](https://github.com/sukeshofficial)
-- [Mahima](https://github.com/mahima-jayshri)    
-- [Davidson](https://github.com/Davidson-T)    
+- [VeraAdithya](https://github.com/Veraadithya)
 
 Feel free to ⭐️ the repo if it helped you!
