@@ -1345,11 +1345,12 @@ async def fetch_profile(request: Request, username: str = Form(...), token: str 
 if __name__ == "__main__":
     import os
     import uvicorn
-    port = int(os.environ.get("PORT", 8000))  # Railway sets PORT
+    port = int(os.environ.get("PORT", 8000))  # Railway provides PORT
     uvicorn.run(
         "main:app",
-        host="0.0.0.0",   # listen on all interfaces
+        host="0.0.0.0",   # must not be 127.0.0.1
         port=port,
-        reload=False,     # disable reload in prod
-        log_level="info"
+        log_level="info",
+        reload=False      # disable reload in production
     )
+
