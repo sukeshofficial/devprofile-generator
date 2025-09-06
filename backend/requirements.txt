@@ -16,3 +16,4 @@ reportlab  # PDF generation
 weasyprint  # HTML to PDF conversion
 aiofiles  # Async file operations
 python-multipart  # Form handling
+pydantic[email]
