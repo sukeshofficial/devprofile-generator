@@ -33,12 +33,12 @@ template_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=template_dir)
 
 # Get OpenRouter API key from environment variables
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "<your_openrouter_api_key_here>")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
 
 # Validate environment variables on startup
 def validate_environment():
     """Validate required environment variables and configuration."""
-    if OPENROUTER_API_KEY == "<your_openrouter_api_key_here>":
+    if OPENROUTER_API_KEY == "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":
         print("✅ OpenRouter API key configured")
     else:
         print("⚠️  WARNING: OPENROUTER_API_KEY not set. AI features will not work.")
