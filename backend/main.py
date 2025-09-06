@@ -1343,14 +1343,12 @@ async def fetch_profile(request: Request, username: str = Form(...), token: str 
 
 # Main execution block - starts the FastAPI server
 if __name__ == "__main__":
-    import uvicorn
-    
-    # Start the development server with hot reload enabled
-    # This allows the server to automatically restart when code changes are detected
+    import os
+    port = int(os.environ.get("PORT", 8000))  # Railway sets PORT
     uvicorn.run(
-        "main:app", 
-        host="127.0.0.1", 
-        port=8000, 
-        reload=True,  # Enable hot reload for development
-        log_level="info"  # Set logging level
+        "main:app",
+        host="0.0.0.0",   # listen on all interfaces
+        port=port,
+        reload=False,     # disable reload in prod
+        log_level="info"
     )
