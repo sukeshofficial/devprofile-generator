@@ -21,6 +21,7 @@ from database import db, cache_service
 from github_oauth import github_oauth
 from pdf_service import pdf_service
 from portfolio_service import portfolio_service
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 app = FastAPI()
