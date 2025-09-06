@@ -23,9 +23,26 @@ from pdf_service import pdf_service
 from portfolio_service import portfolio_service
 from dotenv import load_dotenv
 
-load_dotenv()
-# Initialize FastAPI application
 app = FastAPI()
+load_dotenv()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/health")
+async def health():
+    """Health check endpoint.
+    curl https://your-railway-app-url/health
+    """
+    return {"status": "ok", "message": "DevProfile backend running"}
+
+# Initialize FastAPI application
 
 # Initialize Jinja2 templates with correct directory path
 # Use absolute path to ensure templates are found regardless of working directory
