@@ -38,7 +38,7 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "<your_openrouter_api_key_h
 # Validate environment variables on startup
 def validate_environment():
     """Validate required environment variables and configuration."""
-    if OPENROUTER_API_KEY == "<your_openrouter_api_key_here>":
+    if OPENROUTER_API_KEY == "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":
         print("✅ OpenRouter API key configured")
     else:
         print("⚠️  WARNING: OPENROUTER_API_KEY not set. AI features will not work.")
