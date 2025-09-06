@@ -1344,6 +1344,7 @@ async def fetch_profile(request: Request, username: str = Form(...), token: str 
 # Main execution block - starts the FastAPI server
 if __name__ == "__main__":
     import os
+    import uvicorn
     port = int(os.environ.get("PORT", 8000))  # Railway sets PORT
     uvicorn.run(
         "main:app",
