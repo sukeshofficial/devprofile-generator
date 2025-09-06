@@ -33,12 +33,12 @@ template_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=template_dir)
 
 # Get OpenRouter API key from environment variables
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "<your_openrouter_api_key_here>")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
 
 # Validate environment variables on startup
 def validate_environment():
     """Validate required environment variables and configuration."""
-    if OPENROUTER_API_KEY == "<your_openrouter_api_key_here>":
+    if OPENROUTER_API_KEY == "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":
         print("✅ OpenRouter API key configured")
     else:
         print("⚠️  WARNING: OPENROUTER_API_KEY not set. AI features will not work.")
@@ -289,7 +289,7 @@ async def extract_skills(request: Request):
                     "Content-Type": "application/json",
                 },
                 json={
-                    "model": "deepseek/deepseek-chat-v3.1:free",  # Free model option
+                    "model": "meta-llama/llama-3-8b-instruct",  # Free model option
                     "messages": messages,
                     "temperature": 0.3,
                 },
@@ -406,7 +406,7 @@ async def suggest_skills(request: Request):
             )
 
         # Validate API key
-        if OPENROUTER_API_KEY == "<your_openrouter_api_key_here>":
+        if not OPENROUTER_API_KEY:
             return templates.TemplateResponse(
                 "suggestions.html",
                 {
@@ -451,7 +451,7 @@ async def suggest_skills(request: Request):
                     "Content-Type": "application/json",
                 },
                 json={
-                    "model": "deepseek/deepseek-chat-v3.1:free",
+                    "model": "meta-llama/llama-3-8b-instruct",
                     "messages": messages,
                     "temperature": 0.3,
                 },
@@ -640,6 +640,169 @@ def extract_youtube_id(url: str):
 templates.env.filters["youtube_id"] = extract_youtube_id
 
 
+# @app.post("/match-jobs", response_class=HTMLResponse)
+# async def match_jobs(request: Request):
+#     """
+#     Matches extracted skills with relevant job opportunities using AI.
+#     Generates job recommendations with company logos and skill alignments.
+#     """
+#     try:
+#         # Parse form data
+#         form = await request.form()
+#         skills = form.get("skills")
+#         username = form.get("username")
+#         token = form.get("token")
+
+#         # Validate input data
+#         if not skills or not skills.strip():
+#             return templates.TemplateResponse(
+#                 "jobmatch.html", 
+#                 {
+#                     "request": request, 
+#                     "jobs": [], 
+#                     "username": username,
+#                     "error": "No skills provided for job matching"
+#                 }
+#             )
+
+#         # Validate API key
+#         if not OPENROUTER_API_KEY:
+#             return templates.TemplateResponse(
+#                 "jobmatch.html", 
+#                 {
+#                     "request": request, 
+#                     "jobs": [], 
+#                     "username": username,
+#                     "error": "OpenRouter API key not configured"
+#                 }
+#             )
+
+#         # Prepare AI prompt for job matching
+#         messages = [
+#             {
+#                 "role": "system",
+#                 "content": "You are a career advisor that maps skills to job opportunities.",
+#             },
+#             {
+#                 "role": "user",
+#                 "content": f"""
+#                     The following skills were extracted from a developer's GitHub:
+#                     If you dont't get any match to job, make sure to give atleast 1 job role.
+#                     {skills}
+
+#                     List 4 job roles that fit this skillset. For each, include:
+
+#                     - Job Title
+#                     - Short Description
+#                     - 3–5 matched skills from above
+#                     - A company that typically hires for it
+
+#                     Return as JSON in this format:
+
+#                     {{
+#                     "jobs": [
+#                         {{
+#                         "title": "Backend Engineer",
+#                         "description": "Build REST APIs using FastAPI and SQLAlchemy.",
+#                         "skills": ["FastAPI", "SQLAlchemy", "Git"],
+#                         "company": "Netflix"
+#                         }}
+#                     ]
+#                     }}
+#                 """,
+#             },
+#         ]
+
+#         # Make request to OpenRouter API
+#         async with httpx.AsyncClient(timeout=60.0) as client:
+#             response = await client.post(
+#                 "https://openrouter.ai/api/v1/chat/completions",
+#                 headers={
+#                     "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+#                     "Content-Type": "application/json",
+#                 },
+#                 json={
+#                     "model": "meta-llama/llama-3-8b-instruct",  # Reliable model for JSON generation
+#                     "messages": messages,
+#                     "temperature": 0.4,
+#                 },
+#             )
+
+#         # Check if API request was successful
+#         if response.status_code != 200:
+#             error_msg = f"OpenRouter API error (Status {response.status_code}): {response.text}"
+#             print(f"OpenRouter ERROR: {error_msg}")
+#             return templates.TemplateResponse(
+#                 "jobmatch.html", 
+#                 {
+#                     "request": request, 
+#                     "jobs": [], 
+#                     "username": username,
+#                     "error": f"API Error: {error_msg}"
+#                 }
+#             )
+
+#         # Parse AI response
+#         try:
+#             result = response.json()
+#             if "choices" in result and len(result["choices"]) > 0:
+#                 ai_content = result["choices"][0]["message"]["content"]
+#                 parsed = json.loads(ai_content)
+#                 jobs = parsed.get("jobs", [])
+#             else:
+#                 print("❌ Invalid AI response format:", result)
+#                 jobs = []
+#         except (json.JSONDecodeError, KeyError, IndexError) as e:
+#             print(f"❌ Error parsing AI response: {e}")
+#             print("Raw AI response:", result)
+#             jobs = []
+
+#         # Add company logos using Clearbit service
+#         for job in jobs:
+#             if "company" in job:
+#                 company_name = job["company"].lower().replace(" ", "").replace(".", "")
+#                 job["logo"] = f"https://logo.clearbit.com/{company_name}.com"
+
+#         return templates.TemplateResponse(
+#             "jobmatch.html", 
+#             {
+#                 "request": request, 
+#                 "jobs": jobs, 
+#                 "username": username
+#             }
+#         )
+
+#     except httpx.TimeoutException:
+#         return templates.TemplateResponse(
+#             "jobmatch.html", 
+#             {
+#                 "request": request, 
+#                 "jobs": [], 
+#                 "username": username,
+#                 "error": "Request timeout. The AI service took too long to respond."
+#             }
+#         )
+#     except httpx.RequestError as e:
+#         return templates.TemplateResponse(
+#             "jobmatch.html", 
+#             {
+#                 "request": request, 
+#                 "jobs": [], 
+#                 "username": username,
+#                 "error": f"Network error: {str(e)}"
+#             }
+#         )
+#     except Exception as e:
+#         return templates.TemplateResponse(
+#             "jobmatch.html", 
+#             {
+#                 "request": request, 
+#                 "jobs": [], 
+#                 "username": username,
+#                 "error": f"Unexpected error: {str(e)}"
+#             }
+#         )
+
 @app.post("/match-jobs", response_class=HTMLResponse)
 async def match_jobs(request: Request):
     """
@@ -656,28 +819,28 @@ async def match_jobs(request: Request):
         # Validate input data
         if not skills or not skills.strip():
             return templates.TemplateResponse(
-                "jobmatch.html", 
+                "jobmatch.html",
                 {
-                    "request": request, 
-                    "jobs": [], 
+                    "request": request,
+                    "jobs": [],
                     "username": username,
-                    "error": "No skills provided for job matching"
-                }
+                    "error": "No skills provided for job matching",
+                },
             )
 
         # Validate API key
-        if OPENROUTER_API_KEY == "<your_openrouter_api_key_here>":
+        if not OPENROUTER_API_KEY:
             return templates.TemplateResponse(
-                "jobmatch.html", 
+                "jobmatch.html",
                 {
-                    "request": request, 
-                    "jobs": [], 
+                    "request": request,
+                    "jobs": [],
                     "username": username,
-                    "error": "OpenRouter API key not configured"
-                }
+                    "error": "OpenRouter API key not configured",
+                },
             )
 
-        # Prepare AI prompt for job matching
+        # Prepare AI prompt
         messages = [
             {
                 "role": "system",
@@ -686,34 +849,33 @@ async def match_jobs(request: Request):
             {
                 "role": "user",
                 "content": f"""
-                    The following skills were extracted from a developer's GitHub:
-                    If you dont't get any match to job, make sure to give atleast 1 job role.
-                    {skills}
+                The following skills were extracted from a developer's GitHub:
+                {skills}
 
-                    List 4 job roles that fit this skillset. For each, include:
+                List 4 job roles that fit this skillset. For each, include:
 
-                    - Job Title
-                    - Short Description
-                    - 3–5 matched skills from above
-                    - A company that typically hires for it
+                - Job Title
+                - Short Description
+                - 3–5 matched skills from above
+                - A company that typically hires for it
 
-                    Return as JSON in this format:
+                Return as JSON in this format:
 
+                {{
+                  "jobs": [
                     {{
-                    "jobs": [
-                        {{
-                        "title": "Backend Engineer",
-                        "description": "Build REST APIs using FastAPI and SQLAlchemy.",
-                        "skills": ["FastAPI", "SQLAlchemy", "Git"],
-                        "company": "Netflix"
-                        }}
-                    ]
+                      "title": "Backend Engineer",
+                      "description": "Build REST APIs using FastAPI and SQLAlchemy.",
+                      "skills": ["FastAPI", "SQLAlchemy", "Git"],
+                      "company": "Netflix"
                     }}
+                  ]
+                }}
                 """,
             },
         ]
 
-        # Make request to OpenRouter API
+        # Call OpenRouter
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
                 "https://openrouter.ai/api/v1/chat/completions",
@@ -722,86 +884,85 @@ async def match_jobs(request: Request):
                     "Content-Type": "application/json",
                 },
                 json={
-                    "model": "deepseek/deepseek-chat-v3.1:free",  # Reliable model for JSON generation
+                    "model": "meta-llama/llama-3-8b-instruct",
                     "messages": messages,
                     "temperature": 0.4,
+                    "response_format": {"type": "json_object"},  # ✅ enforce JSON
                 },
             )
 
-        # Check if API request was successful
+        # Check API response
         if response.status_code != 200:
             error_msg = f"OpenRouter API error (Status {response.status_code}): {response.text}"
             print(f"OpenRouter ERROR: {error_msg}")
             return templates.TemplateResponse(
-                "jobmatch.html", 
+                "jobmatch.html",
                 {
-                    "request": request, 
-                    "jobs": [], 
+                    "request": request,
+                    "jobs": [],
                     "username": username,
-                    "error": f"API Error: {error_msg}"
-                }
+                    "error": f"API Error: {error_msg}",
+                },
             )
 
-        # Parse AI response
+        # Parse AI response safely
+        result = response.json()
+        jobs = []
         try:
-            result = response.json()
-            if "choices" in result and len(result["choices"]) > 0:
-                ai_content = result["choices"][0]["message"]["content"]
-                parsed = json.loads(ai_content)
-                jobs = parsed.get("jobs", [])
-            else:
-                print("❌ Invalid AI response format:", result)
-                jobs = []
-        except (json.JSONDecodeError, KeyError, IndexError) as e:
+            ai_content = result["choices"][0]["message"]["content"].strip()
+
+            # Strip ```json fences if present
+            import re
+            ai_content = re.sub(r"^```json|```$", "", ai_content, flags=re.MULTILINE).strip()
+
+            parsed = json.loads(ai_content)
+            jobs = parsed.get("jobs", [])
+        except Exception as e:
             print(f"❌ Error parsing AI response: {e}")
             print("Raw AI response:", result)
             jobs = []
 
-        # Add company logos using Clearbit service
+        # Add company logos
         for job in jobs:
             if "company" in job:
                 company_name = job["company"].lower().replace(" ", "").replace(".", "")
-                job["logo"] = f"https://logo.clearbit.com/{company_name}.com"
+                job["logo"] = f"https://www.google.com/s2/favicons?sz=128&domain={company_name}.com"
 
         return templates.TemplateResponse(
-            "jobmatch.html", 
-            {
-                "request": request, 
-                "jobs": jobs, 
-                "username": username
-            }
+            "jobmatch.html", {"request": request, "jobs": jobs, "username": username}
         )
 
     except httpx.TimeoutException:
         return templates.TemplateResponse(
-            "jobmatch.html", 
+            "jobmatch.html",
             {
-                "request": request, 
-                "jobs": [], 
+                "request": request,
+                "jobs": [],
                 "username": username,
-                "error": "Request timeout. The AI service took too long to respond."
-            }
+                "error": "Request timeout. The AI service took too long to respond.",
+            },
         )
     except httpx.RequestError as e:
         return templates.TemplateResponse(
-            "jobmatch.html", 
+            "jobmatch.html",
             {
-                "request": request, 
-                "jobs": [], 
+                "request": request,
+                "jobs": [],
                 "username": username,
-                "error": f"Network error: {str(e)}"
-            }
+                "error": f"Network error: {str(e)}",
+            },
         )
     except Exception as e:
         return templates.TemplateResponse(
-            "jobmatch.html", 
+            "jobmatch.html",
             {
-                "request": request, 
-                "jobs": [], 
+                "request": request,
+                "jobs": [],
                 "username": username,
-                "error": f"Unexpected error: {str(e)}"
-            }
+                "error": f"Unexpected error: {str(e)}",
+            },
         )
+
 
 # ==================== NEW AUTHENTICATION ROUTES ====================
 
