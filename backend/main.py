@@ -21,11 +21,29 @@ from database import db, cache_service
 from github_oauth import github_oauth
 from pdf_service import pdf_service
 from portfolio_service import portfolio_service
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-load_dotenv()
-# Initialize FastAPI application
 app = FastAPI()
+load_dotenv()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/health")
+async def health():
+    """Health check endpoint.
+    curl https://your-railway-app-url/health
+    """
+    return {"status": "ok", "message": "DevProfile backend running"}
+
+# Initialize FastAPI application
 
 # Initialize Jinja2 templates with correct directory path
 # Use absolute path to ensure templates are found regardless of working directory
@@ -1407,14 +1425,14 @@ async def fetch_profile(request: Request, username: str = Form(...), token: str 
 
 # Main execution block - starts the FastAPI server
 if __name__ == "__main__":
+    import os
     import uvicorn
-    
-    # Start the development server with hot reload enabled
-    # This allows the server to automatically restart when code changes are detected
+    port = int(os.environ.get("PORT", 8000))  # Railway provides PORT
     uvicorn.run(
-        "main:app", 
-        host="127.0.0.1", 
-        port=8000, 
-        reload=True,  # Enable hot reload for development
-        log_level="info"  # Set logging level
+        "main:app",
+        host="0.0.0.0",   # must not be 127.0.0.1
+        port=port,
+        log_level="info",
+        reload=False      # disable reload in production
     )
+
