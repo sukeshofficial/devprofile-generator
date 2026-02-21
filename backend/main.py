@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import urllib.parse
 from dotenv import load_dotenv
 import httpx
 import requests
@@ -51,12 +52,12 @@ template_dir = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=template_dir)
 
 # Get OpenRouter API key from environment variables
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "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")
 
 # Validate environment variables on startup
 def validate_environment():
     """Validate required environment variables and configuration."""
-    if OPENROUTER_API_KEY == "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":
+    if OPENROUTER_API_KEY == "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":
         print("✅ OpenRouter API key configured")
     else:
         print("⚠️  WARNING: OPENROUTER_API_KEY not set. AI features will not work.")
@@ -980,6 +981,11 @@ async def match_jobs(request: Request):
                     # Generic score if AI didn't provide one
                     import random
                     job["match_score"] = random.randint(75, 95)
+                
+                # Generate a real-world search URL for "internet proof"
+                query = f"{job['title']} {job.get('company', '')}".strip()
+                encoded_query = urllib.parse.quote_plus(query)
+                job["verification_url"] = f"https://www.linkedin.com/jobs/search/?keywords={encoded_query}"
                 
                 jobs.append(job)
 
