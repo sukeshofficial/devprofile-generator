@@ -3,43 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevProfile Generator - AI-powered GitHub analysis for skill extraction, career suggestions, and job matching.">
     <title>{% block title %}DevProfile Generator{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
                     colors: {
                         primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                            950: '#1e1b4b',
                         },
-                        secondary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
+                        accent: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                        surface: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
                         }
                     },
                     animation: {
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.6s ease-out',
+                        'fade-in': 'fadeIn 0.6s ease-out both',
+                        'slide-up': 'slideUp 0.6s ease-out both',
+                        'slide-down': 'slideDown 0.4s ease-out both',
+                        'scale-in': 'scaleIn 0.3s ease-out both',
                         'bounce-gentle': 'bounceGentle 2s infinite',
                         'pulse-slow': 'pulse 3s infinite',
+                        'spin-slow': 'spin 2s linear infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
                     },
                     keyframes: {
                         fadeIn: {
@@ -47,12 +72,24 @@
                             '100%': { opacity: '1' },
                         },
                         slideUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '0%': { transform: 'translateY(24px)', opacity: '0' },
                             '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-12px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.95)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
                         },
                         bounceGentle: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-5px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
                         },
                     }
                 }
@@ -61,115 +98,264 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* ── Base ──────────────────────────────────────────── */
+        * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+        /* ── Gradient Backgrounds ─────────────────────────── */
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #c026d3 100%);
         }
+        .gradient-bg-subtle {
+            background: linear-gradient(135deg, #eef2ff 0%, #faf5ff 50%, #fdf4ff 100%);
+        }
+
+        /* ── Glass Effect ─────────────────────────────────── */
         .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
-        .card-hover {
-            transition: all 0.3s ease;
+
+        /* ── Card Styles ──────────────────────────────────── */
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        .card:hover {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 8px 16px rgba(0,0,0,0.04);
+            transform: translateY(-2px);
         }
-        
-        /* Dark mode styles */
-        .dark {
-            background-color: #1a202c;
-            color: #e2e8f0;
+        .card-flat {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.25s ease;
         }
-        
-        .dark .bg-white {
-            background-color: #2d3748;
+        .card-flat:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
         }
-        
-        .dark .text-gray-900 {
-            color: #e2e8f0;
+
+        /* ── Button Base ──────────────────────────────────── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            line-height: 1;
         }
-        
-        .dark .text-gray-600 {
-            color: #a0aec0;
+        .btn:active { transform: scale(0.98); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
         }
-        
-        .dark .text-gray-500 {
-            color: #718096;
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45);
+            filter: brightness(1.05);
         }
-        
-        .dark .border-gray-200 {
-            border-color: #4a5568;
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #e2e8f0;
         }
-        
-        .dark .bg-gray-100 {
-            background-color: #4a5568;
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
         }
-        
-        .dark .bg-gray-50 {
-            background-color: #2d3748;
+
+        .btn-accent {
+            background: linear-gradient(135deg, #7c3aed, #c026d3);
+            color: white;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
         }
-        
-        .dark .bg-gradient-to-br {
-            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        .btn-accent:hover {
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+            filter: brightness(1.05);
         }
-        
-        /* Skill progress bars */
+
+        .btn-success {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+        }
+        .btn-success:hover {
+            box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+            filter: brightness(1.05);
+        }
+
+        /* ── Inputs ───────────────────────────────────────── */
+        .input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 0.75rem;
+            background: white;
+            color: #1e293b;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        .input:hover { border-color: #cbd5e1; }
+        .input:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+        }
+        .input::placeholder { color: #94a3b8; }
+
+        /* ── Skill progress bars ──────────────────────────── */
         .skill-progress {
-            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            background: linear-gradient(90deg, #6366f1, #a855f7);
             border-radius: 10px;
-            height: 8px;
-            transition: width 0.3s ease;
+            height: 6px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        /* Interactive charts */
+
+        /* ── Charts ───────────────────────────────────────── */
         .chart-container {
             position: relative;
             height: 300px;
         }
-        
-        /* Loading animations */
+
+        /* ── Loading States ───────────────────────────────── */
         .loading-spinner {
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
-        
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-        
-        /* Pulse animation for loading states */
-        .pulse-loading {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+            border-radius: 0.5rem;
         }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .5; }
+
+        /* ── Form Loading Overlay ─────────────────────────── */
+        .form-loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
         }
+        .form-loading-overlay.active { display: flex; }
+
+        /* ── Progress Stepper ─────────────────────────────── */
+        .stepper { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.25rem; }
+        .stepper-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+        .stepper-dot {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        .stepper-dot.completed { background: #4f46e5; color: white; }
+        .stepper-dot.active { background: #4f46e5; color: white; box-shadow: 0 0 0 4px rgba(79,70,229,0.2); }
+        .stepper-dot.pending { background: #e2e8f0; color: #94a3b8; }
+        .stepper-line {
+            width: 2.5rem;
+            height: 2px;
+            border-radius: 1px;
+            flex-shrink: 0;
+        }
+        .stepper-line.completed { background: #4f46e5; }
+        .stepper-line.pending { background: #e2e8f0; }
+
+        /* ── Toast Notification ────────────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            color: white;
+            font-weight: 500;
+            z-index: 9999;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast-info { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+        .toast-success { background: linear-gradient(135deg, #059669, #10b981); }
+        .toast-error { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+        /* ── Dark mode styles ─────────────────────────────── */
+        .dark { background-color: #0f172a; color: #e2e8f0; }
+        .dark .bg-white, .dark .card, .dark .card-flat { background-color: #1e293b; border-color: #334155; }
+        .dark .text-gray-900, .dark .text-surface-900 { color: #f1f5f9; }
+        .dark .text-gray-800 { color: #e2e8f0; }
+        .dark .text-gray-700 { color: #cbd5e1; }
+        .dark .text-gray-600 { color: #94a3b8; }
+        .dark .text-gray-500 { color: #64748b; }
+        .dark .border-gray-200, .dark .border-gray-300 { border-color: #334155; }
+        .dark .bg-gray-50, .dark .bg-gray-100, .dark .bg-surface-50 { background-color: #1e293b; }
+        .dark .input { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+        .dark .input:hover { border-color: #475569; }
+        .dark .input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgba(129,140,248,0.15); }
+        .dark .gradient-bg-subtle { background: linear-gradient(135deg, #1e1b4b 0%, #1e293b 50%, #1e293b 100%); }
+
+        /* ── Scrollbar ────────────────────────────────────── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* ── Stagger animation delays ─────────────────────── */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
     </style>
+    {% block head %}{% endblock %}
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="gradient-bg-subtle min-h-screen flex flex-col">
     <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+    <nav class="bg-white/80 backdrop-blur-xl border-b border-gray-200/60 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-code text-white text-lg"></i>
+                <a href="/" class="flex items-center space-x-3 group">
+                    <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center shadow-md shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-shadow">
+                        <i class="fas fa-code text-white text-sm"></i>
                     </div>
-                    <h1 class="text-xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-                        DevProfile Generator
-                    </h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button id="darkModeToggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors">
-                        <i class="fas fa-moon text-gray-600"></i>
+                    <span class="text-lg font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                        DevProfile
+                    </span>
+                </a>
+                <div class="flex items-center space-x-2">
+                    <button id="darkModeToggle" class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-100 hover:bg-surface-200 transition-colors" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon text-surface-500 text-sm"></i>
                     </button>
-                    <a href="https://github.com/sukeshofficial/devprofile-project" target="_blank" 
-                       class="text-gray-600 hover:text-primary-600 transition-colors">
-                        <i class="fab fa-github text-xl"></i>
+                    <a href="https://github.com/sukeshofficial/devprofile-project" target="_blank"
+                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-100 hover:bg-surface-200 transition-colors" aria-label="GitHub Repository">
+                        <i class="fab fa-github text-surface-500 text-sm"></i>
                     </a>
                 </div>
             </div>
@@ -182,48 +368,91 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white/80 backdrop-blur-md border-t border-gray-200 mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="text-center">
-                <p class="text-gray-600 mb-4">Made by</p>
-                <div class="flex justify-center space-x-6">
-                    <a href="https://github.com/sukeshofficial" target="_blank" 
-                       class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                        Sukesh
-                    </a>
-                    <a href="https://github.com/Veraadithya" target="_blank" 
-                       class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                        VeraAdithya
-                    </a>
+    <footer class="border-t border-gray-200/60 mt-16 bg-white/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-code text-white text-xs"></i>
+                    </div>
+                    <span class="font-semibold text-surface-700">DevProfile Generator</span>
                 </div>
+                <p class="text-sm text-surface-400">
+                    Built by
+                    <a href="https://github.com/sukeshofficial" target="_blank" class="font-medium text-primary-600 hover:text-primary-700 hover:underline transition-colors">Sukesh</a>
+                </p>
+                <p class="text-xs text-surface-400">&copy; 2026 DevProfile. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Dark Mode Script -->
+    <!-- Global Loading Overlay -->
+    <div id="loadingOverlay" class="form-loading-overlay">
+        <div class="text-center">
+            <div class="w-16 h-16 border-4 border-white/20 border-t-white rounded-full loading-spinner mx-auto mb-4"></div>
+            <p class="text-white font-semibold text-lg" id="loadingText">Processing...</p>
+            <p class="text-white/60 text-sm mt-1" id="loadingSubtext">This may take a moment</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <!-- Dark Mode + Utilities Script -->
     <script>
-        // Dark mode toggle
+        // ── Dark Mode ────────────────────────────────────
         const darkModeToggle = document.getElementById('darkModeToggle');
         const body = document.body;
-        
-        // Check for saved dark mode preference
+
         const darkMode = localStorage.getItem('darkMode') === 'true';
         if (darkMode) {
             body.classList.add('dark');
-            darkModeToggle.innerHTML = '<i class="fas fa-sun text-yellow-500"></i>';
+            darkModeToggle.innerHTML = '<i class="fas fa-sun text-amber-400 text-sm"></i>';
         }
-        
+
         darkModeToggle.addEventListener('click', () => {
             body.classList.toggle('dark');
             const isDark = body.classList.contains('dark');
             localStorage.setItem('darkMode', isDark);
-            
-            if (isDark) {
-                darkModeToggle.innerHTML = '<i class="fas fa-sun text-yellow-500"></i>';
-            } else {
-                darkModeToggle.innerHTML = '<i class="fas fa-moon text-gray-600"></i>';
-            }
+            darkModeToggle.innerHTML = isDark
+                ? '<i class="fas fa-sun text-amber-400 text-sm"></i>'
+                : '<i class="fas fa-moon text-surface-500 text-sm"></i>';
+        });
+
+        // ── Loading Overlay ──────────────────────────────
+        function showLoading(text = 'Processing...', subtext = 'This may take a moment') {
+            const overlay = document.getElementById('loadingOverlay');
+            document.getElementById('loadingText').textContent = text;
+            document.getElementById('loadingSubtext').textContent = subtext;
+            overlay.classList.add('active');
+        }
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+
+        // ── Toast Notifications ──────────────────────────
+        function showToast(message, type = 'info', duration = 3500) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} mr-2"></i>${message}`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // ── Form Submit Loading ──────────────────────────
+        document.querySelectorAll('form[data-loading]').forEach(form => {
+            form.addEventListener('submit', function() {
+                const text = this.dataset.loadingText || 'Processing...';
+                const subtext = this.dataset.loadingSubtext || 'This may take a moment';
+                showLoading(text, subtext);
+            });
         });
     </script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

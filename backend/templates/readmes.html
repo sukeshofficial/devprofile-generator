@@ -3,65 +3,59 @@
 {% block title %}README Analysis - DevProfile Generator{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <!-- Header -->
-    <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">
-            <i class="fas fa-file-alt text-primary-600 mr-3"></i>
+    <div class="text-center mb-10 animate-fade-in">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-600 text-xs font-semibold mb-4">
+            <i class="fas fa-file-alt"></i> Step 2 of 3
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">
             README Analysis
         </h1>
-        <p class="text-xl text-gray-600">
+        <p class="text-surface-500 max-w-lg mx-auto">
             Extracted content from your selected repositories
         </p>
     </div>
 
-    <!-- Progress Indicator -->
-    <div class="mb-12">
-        <div class="flex items-center justify-center space-x-4">
-            <div class="flex items-center">
-                <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    <i class="fas fa-check"></i>
-                </div>
-                <span class="ml-2 text-sm font-medium text-gray-900">Repository Selection</span>
+    <!-- Progress Stepper -->
+    <div class="mb-12 flex justify-center">
+        <div class="stepper">
+            <div class="stepper-step">
+                <div class="stepper-dot completed"><i class="fas fa-check text-[10px]"></i></div>
+                <span class="text-xs font-medium text-gray-900 hidden sm:inline">Repo Selection</span>
             </div>
-            <div class="w-16 h-1 bg-primary-600 rounded"></div>
-            <div class="flex items-center">
-                <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                    2
-                </div>
-                <span class="ml-2 text-sm font-medium text-primary-600">README Analysis</span>
+            <div class="stepper-line completed"></div>
+            <div class="stepper-step">
+                <div class="stepper-dot active">2</div>
+                <span class="text-xs font-semibold text-primary-600 hidden sm:inline">README Analysis</span>
             </div>
-            <div class="w-16 h-1 bg-gray-300 rounded"></div>
-            <div class="flex items-center">
-                <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-gray-500 text-sm font-bold">
-                    3
-                </div>
-                <span class="ml-2 text-sm font-medium text-gray-500">Skill Extraction</span>
+            <div class="stepper-line pending"></div>
+            <div class="stepper-step">
+                <div class="stepper-dot pending">3</div>
+                <span class="text-xs font-medium text-surface-400 hidden sm:inline">Skill Extraction</span>
             </div>
         </div>
     </div>
 
     <!-- README Content -->
-    <div class="space-y-8 mb-12">
+    <div class="space-y-6 mb-10">
         {% for repo, content in readmes.items() %}
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden animate-fade-in">
-            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 px-6 py-4">
-                <h2 class="text-xl font-bold text-white flex items-center">
-                    <i class="fab fa-github mr-3"></i>
-                    {{ repo }}
-                </h2>
+        <div class="card overflow-hidden animate-fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+            <div class="gradient-bg px-6 py-3.5 flex items-center gap-3">
+                <div class="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
+                    <i class="fab fa-github text-white text-sm"></i>
+                </div>
+                <h2 class="text-base font-bold text-white">{{ repo }}</h2>
             </div>
             <div class="p-6">
                 {% if content == "(README not found or inaccessible)" %}
-                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-triangle text-yellow-500 mr-3"></i>
-                        <p class="text-yellow-700">README not found or inaccessible for this repository</p>
-                    </div>
+                <div class="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <i class="fas fa-exclamation-triangle text-amber-500"></i>
+                    <p class="text-sm text-amber-700 font-medium">README not found or inaccessible for this repository</p>
                 </div>
                 {% else %}
-                <div class="bg-gray-50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                    <pre class="text-sm text-gray-700 whitespace-pre-wrap font-mono leading-relaxed">{{ content }}</pre>
+                <div class="bg-surface-50 rounded-xl p-5 max-h-80 overflow-y-auto">
+                    <pre class="text-sm text-surface-700 whitespace-pre-wrap font-mono leading-relaxed">{{ content }}</pre>
                 </div>
                 {% endif %}
             </div>
@@ -70,22 +64,22 @@
     </div>
 
     <!-- Action Form -->
-    <div class="bg-white rounded-2xl shadow-xl p-8">
+    <div class="card p-8 animate-slide-up">
         <div class="text-center mb-6">
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">Ready for Skill Extraction?</h3>
-            <p class="text-gray-600">Our AI will analyze these README files to extract your technical skills</p>
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Ready for Skill Extraction?</h3>
+            <p class="text-surface-500 text-sm">Our AI will analyze these README files to extract your technical skills</p>
         </div>
 
-        <form action="/extract-skills" method="post">
+        <form action="/extract-skills" method="post" data-loading data-loading-text="Extracting Skills..." data-loading-subtext="AI is analyzing your README files">
             <input type="hidden" name="username" value="{{ username }}">
             <input type="hidden" name="token" value="{{ token }}">
-            
+
             {% for repo, content in readmes.items() %}
                 <textarea hidden name="readme_{{ repo }}">{{ content | e }}</textarea>
             {% endfor %}
-            
+
             <div class="text-center">
-                <button class="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-4 px-8 rounded-lg font-semibold text-lg hover:from-primary-700 hover:to-secondary-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl">
+                <button type="submit" class="btn btn-primary py-3.5 px-10 text-sm">
                     <i class="fas fa-brain mr-2"></i>
                     Extract Skills with AI
                 </button>
@@ -94,20 +88,20 @@
     </div>
 
     <!-- Summary Stats -->
-    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-xl p-6 shadow-lg text-center">
-            <div class="text-3xl font-bold text-primary-600 mb-2">{{ readmes|length }}</div>
-            <div class="text-gray-600">Repositories Analyzed</div>
+    <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="card text-center p-5">
+            <div class="text-2xl font-extrabold text-primary-600 mb-1">{{ readmes|length }}</div>
+            <div class="text-xs text-surface-500 font-medium">Repositories Analyzed</div>
         </div>
-        <div class="bg-white rounded-xl p-6 shadow-lg text-center">
-            <div class="text-3xl font-bold text-green-600 mb-2">
+        <div class="card text-center p-5">
+            <div class="text-2xl font-extrabold text-emerald-600 mb-1">
                 {{ readmes.values()|list|join('')|length // 100 }}K+
             </div>
-            <div class="text-gray-600">Characters Processed</div>
+            <div class="text-xs text-surface-500 font-medium">Characters Processed</div>
         </div>
-        <div class="bg-white rounded-xl p-6 shadow-lg text-center">
-            <div class="text-3xl font-bold text-purple-600 mb-2">AI</div>
-            <div class="text-gray-600">Powered Analysis</div>
+        <div class="card text-center p-5">
+            <div class="text-2xl font-extrabold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent mb-1">AI</div>
+            <div class="text-xs text-surface-500 font-medium">Powered Analysis</div>
         </div>
     </div>
 </div>

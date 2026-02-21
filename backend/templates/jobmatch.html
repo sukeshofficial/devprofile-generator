@@ -3,209 +3,149 @@
 {% block title %}Job Matches - DevProfile Generator{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <!-- Header -->
-    <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">
-            <i class="fas fa-briefcase text-primary-600 mr-3"></i>
-            Perfect Job Matches
+    <div class="text-center mb-10 animate-fade-in">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold mb-4">
+            <i class="fas fa-check-circle"></i> Analysis Complete
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">
+            Your Job Matches
         </h1>
-        <p class="text-xl text-gray-600">
-            Career opportunities tailored to your skillset
+        <p class="text-surface-500 max-w-lg mx-auto">
+            AI-curated opportunities based on your skillset
         </p>
     </div>
 
-    <!-- Success Message -->
-    <div class="bg-green-50 border border-green-200 rounded-xl p-6 mb-8 animate-fade-in">
-        <div class="flex items-center">
-            <i class="fas fa-check-circle text-green-500 text-2xl mr-4"></i>
+    <!-- Success Banner -->
+    <div class="card gradient-bg p-6 mb-10 animate-fade-in">
+        <div class="flex items-center gap-4 text-white">
+            <div class="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-trophy text-xl"></i>
+            </div>
             <div>
-                <h2 class="text-lg font-semibold text-green-900">Analysis Complete!</h2>
-                <p class="text-green-700">We've found {{ jobs|length }} job roles that match your skills perfectly.</p>
+                <h2 class="text-lg font-bold">
+                    {% if jobs %}{{ jobs|length }}{% else %}0{% endif %} Job{% if not jobs or jobs|length != 1 %}s{% endif %} Found!
+                </h2>
+                <p class="text-white/70 text-sm">Based on your extracted GitHub skills</p>
             </div>
         </div>
     </div>
 
-    {% if jobs %}
     <!-- Job Cards -->
-    <div class="grid gap-8 lg:grid-cols-2 mb-12">
+    {% if jobs %}
+    <div class="grid gap-5 mb-10">
         {% for job in jobs %}
-        <div class="bg-white rounded-2xl shadow-xl overflow-hidden card-hover animate-slide-up">
-            <!-- Company Header -->
-            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 px-6 py-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white">{{ job.title }}</h2>
-                        <p class="text-blue-100 mt-1">{{ job.company }}</p>
+        <div class="card overflow-hidden animate-fade-in hover:border-primary-200" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+            <div class="p-6 md:p-8">
+                <div class="flex flex-col md:flex-row md:items-start gap-5">
+                    <!-- Company Logo / Avatar -->
+                    <div class="w-14 h-14 bg-gradient-to-br from-primary-100 to-accent-100 rounded-xl flex items-center justify-center flex-shrink-0 text-primary-600 font-extrabold text-lg overflow-hidden border border-surface-100">
+                        {% if job.logo %}
+                            <img src="{{ job.logo }}" alt="{{ job.company }}" class="w-full h-full object-cover p-2">
+                        {% else %}
+                            {{ job.company[:2] | upper }}
+                        {% endif %}
                     </div>
-                    {% if job.logo %}
-                    <div class="w-16 h-16 bg-white rounded-full p-2 shadow-lg">
-                        <img src="{{ job.logo }}" 
-                             alt="{{ job.company }} logo" 
-                             class="w-full h-full object-contain rounded-full"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                        <div class="w-full h-full bg-gray-100 rounded-full flex items-center justify-center text-gray-500 text-xs font-bold" style="display: none;">
-                            {{ job.company[0] }}
+
+                    <div class="flex-1 min-w-0">
+                        <!-- Title + Company -->
+                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">{{ job.title }}</h3>
+                                <p class="text-surface-500 text-sm flex items-center gap-1.5 mt-0.5">
+                                    <i class="fas fa-building text-xs text-surface-400"></i>
+                                    {{ job.company }}
+                                </p>
+                            </div>
+                            {% if job.match_score %}
+                            <div class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg text-sm font-bold border border-emerald-200 flex-shrink-0">
+                                <i class="fas fa-chart-line text-xs"></i>
+                                {{ job.match_score }}% Match
+                            </div>
+                            {% endif %}
                         </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
 
-            <!-- Job Content -->
-            <div class="p-6">
-                <!-- Description -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2 flex items-center">
-                        <i class="fas fa-info-circle text-primary-600 mr-2"></i>
-                        Role Description
-                    </h3>
-                    <p class="text-gray-700 leading-relaxed">{{ job.description }}</p>
-                </div>
+                        <!-- Description -->
+                        {% if job.description %}
+                        <p class="text-sm text-surface-600 leading-relaxed mb-4">{{ job.description }}</p>
+                        {% endif %}
 
-                <!-- Matched Skills -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                        <i class="fas fa-check-double text-green-600 mr-2"></i>
-                        Your Matching Skills
-                    </h3>
-                    <div class="flex flex-wrap gap-2">
-                        {% for skill in job.skills %}
-                        <span class="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 text-sm font-semibold px-3 py-2 rounded-full border border-blue-200 hover:from-blue-200 hover:to-purple-200 transition-colors">
-                            <i class="fas fa-code mr-1"></i>
-                            {{ skill }}
-                        </span>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- Company Info -->
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
+                        <!-- Matching Skills -->
+                        {% if job.matching_skills %}
                         <div>
-                            <h4 class="font-semibold text-gray-900 flex items-center">
-                                <i class="fas fa-building text-gray-600 mr-2"></i>
-                                {{ job.company }}
-                            </h4>
-                            <p class="text-sm text-gray-600 mt-1">Leading technology company</p>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-sm text-gray-500">Match Score</div>
-                            <div class="text-2xl font-bold text-green-600">
-                                {{ (job.skills|length * 20)|round }}%
+                            <p class="text-xs font-semibold text-surface-500 uppercase tracking-wider mb-2">Matching Skills</p>
+                            <div class="flex flex-wrap gap-1.5">
+                                {% for skill in job.matching_skills %}
+                                <span class="bg-primary-50 text-primary-700 text-xs px-2.5 py-1 rounded-lg font-medium border border-primary-100 hover:bg-primary-100 transition-colors cursor-default">
+                                    {{ skill }}
+                                </span>
+                                {% endfor %}
                             </div>
                         </div>
+                        {% endif %}
                     </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="mt-6 grid grid-cols-2 gap-3">
-                    <button class="bg-primary-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-primary-700 transition-colors text-sm">
-                        <i class="fas fa-external-link-alt mr-1"></i>
-                        View Jobs
-                    </button>
-                    <button class="bg-gray-100 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors text-sm">
-                        <i class="fas fa-bookmark mr-1"></i>
-                        Save Role
-                    </button>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-
-    <!-- Career Insights -->
-    <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">
-            <i class="fas fa-chart-line text-primary-600 mr-2"></i>
-            Career Insights
-        </h2>
-        
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="text-center p-6 bg-blue-50 rounded-xl">
-                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-trophy text-white text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-gray-900 mb-2">{{ jobs|length }} Matches</h3>
-                <p class="text-gray-600 text-sm">Job roles that fit your profile</p>
-            </div>
-            
-            <div class="text-center p-6 bg-green-50 rounded-xl">
-                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-star text-white text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-gray-900 mb-2">High Potential</h3>
-                <p class="text-gray-600 text-sm">Strong skill alignment detected</p>
-            </div>
-            
-            <div class="text-center p-6 bg-purple-50 rounded-xl">
-                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-rocket text-white text-2xl"></i>
-                </div>
-                <h3 class="font-bold text-gray-900 mb-2">Ready to Apply</h3>
-                <p class="text-gray-600 text-sm">Your skills meet requirements</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Next Steps -->
-    <div class="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-2xl p-8 text-white">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold mb-4">Ready to Take the Next Step?</h2>
-            <p class="text-blue-100 text-lg">Your GitHub analysis is complete. Here's what you can do next:</p>
-        </div>
-        
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="text-center">
-                <i class="fas fa-file-alt text-4xl mb-4 text-blue-200"></i>
-                <h3 class="font-bold text-lg mb-2">Update Your Resume</h3>
-                <p class="text-blue-100 text-sm">Include the skills we've identified in your resume</p>
-            </div>
-            
-            <div class="text-center">
-                <i class="fas fa-linkedin text-4xl mb-4 text-blue-200"></i>
-                <h3 class="font-bold text-lg mb-2">Optimize LinkedIn</h3>
-                <p class="text-blue-100 text-sm">Update your LinkedIn profile with these insights</p>
-            </div>
-            
-            <div class="text-center">
-                <i class="fas fa-search text-4xl mb-4 text-blue-200"></i>
-                <h3 class="font-bold text-lg mb-2">Start Applying</h3>
-                <p class="text-blue-100 text-sm">Search for these roles on job boards</p>
-            </div>
-        </div>
-        
-        <div class="text-center mt-8">
-            <button onclick="window.location.href='/'" 
-                    class="bg-white text-primary-600 py-3 px-8 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                <i class="fas fa-home mr-2"></i>
-                Analyze Another Profile
-            </button>
-        </div>
-    </div>
-
     {% else %}
-    <!-- No Jobs Found -->
-    <div class="bg-white rounded-2xl shadow-lg p-12 text-center">
-        <i class="fas fa-search text-gray-400 text-6xl mb-6"></i>
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">No Job Matches Found</h2>
-        <p class="text-gray-600 mb-6">
-            We couldn't find job matches at this time. This might be due to API limitations or processing issues.
-        </p>
-        <div class="space-y-4">
-            <button onclick="window.history.back()" 
-                    class="bg-primary-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-700 transition-colors">
-                <i class="fas fa-arrow-left mr-2"></i>
-                Go Back and Try Again
-            </button>
-            <div>
-                <button onclick="window.location.href='/'" 
-                        class="text-primary-600 hover:text-primary-700 font-medium">
-                    Start Over with New Analysis
-                </button>
-            </div>
+    <!-- No Jobs -->
+    <div class="card p-12 text-center mb-10 animate-fade-in">
+        <div class="w-16 h-16 bg-surface-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-briefcase text-surface-400 text-xl"></i>
         </div>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">No Matches Found</h2>
+        <p class="text-surface-500 text-sm mb-6 max-w-sm mx-auto">
+            We couldn't find job matches with the current skills. Try analyzing more repositories!
+        </p>
     </div>
     {% endif %}
+
+    <!-- Career Insights -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+        <div class="card text-center p-6">
+            <div class="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <i class="fas fa-chart-bar text-primary-600 text-sm"></i>
+            </div>
+            <div class="text-2xl font-extrabold text-gray-900 mb-1">
+                {% if jobs %}{{ jobs|length }}{% else %}0{% endif %}
+            </div>
+            <p class="text-xs text-surface-500 font-medium">Opportunities Found</p>
+        </div>
+        <div class="card text-center p-6">
+            <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <i class="fas fa-star text-emerald-600 text-sm"></i>
+            </div>
+            <div class="text-2xl font-extrabold text-gray-900 mb-1">
+                {% if jobs %}{{ (jobs | map(attribute='match_score', default=0) | list | sum / jobs|length) | round | int }}%{% else %}0%{% endif %}
+            </div>
+            <p class="text-xs text-surface-500 font-medium">Average Match</p>
+        </div>
+        <div class="card text-center p-6">
+            <div class="w-10 h-10 bg-accent-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                <i class="fas fa-rocket text-accent-600 text-sm"></i>
+            </div>
+            <div class="text-2xl font-extrabold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent mb-1">AI</div>
+            <p class="text-xs text-surface-500 font-medium">Powered Matching</p>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="card p-8">
+        <div class="text-center mb-6">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">What's Next?</h3>
+            <p class="text-surface-500 text-sm">Start a new analysis or improve your skills</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <a href="/" class="btn btn-primary py-3.5 text-sm text-center">
+                <i class="fas fa-rocket mr-2"></i>New Analysis
+            </a>
+            <button onclick="window.history.back()" class="btn btn-secondary py-3.5 text-sm">
+                <i class="fas fa-arrow-left mr-2 text-xs"></i>Back to Suggestions
+            </button>
+        </div>
+    </div>
 </div>
 {% endblock %}

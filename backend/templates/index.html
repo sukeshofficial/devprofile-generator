@@ -5,281 +5,241 @@
 {% block content %}
 <div class="relative overflow-hidden">
     <!-- Hero Section -->
-    <div class="gradient-bg relative">
-        <div class="absolute inset-0 bg-black/20"></div>
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="gradient-bg relative overflow-hidden">
+        <!-- Decorative shapes -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-400/5 rounded-full blur-3xl"></div>
+        </div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
             <div class="text-center">
-                <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 animate-fade-in">
-                    Transform Your GitHub Into
-                    <span class="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
-                        Career Opportunities
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-white/80 text-sm font-medium mb-6 animate-fade-in">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    AI-Powered Developer Profiling
+                </div>
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 animate-fade-in tracking-tight leading-tight">
+                    Transform Your GitHub
+                    <span class="block mt-2 bg-gradient-to-r from-amber-200 via-yellow-200 to-orange-200 bg-clip-text text-transparent">
+                        Into Opportunities
                     </span>
                 </h1>
-                <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto animate-slide-up">
-                    AI-powered analysis of your repositories to extract skills, suggest improvements, 
+                <p class="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto animate-slide-up leading-relaxed">
+                    AI-powered analysis of your repositories to extract skills, suggest improvements,
                     and match you with perfect job opportunities.
                 </p>
-                <div class="flex flex-wrap justify-center gap-4 text-white/80 animate-slide-up">
-                    <div class="flex items-center space-x-2">
-                        <i class="fas fa-robot"></i>
-                        <span>AI-Powered Analysis</span>
+                <div class="flex flex-wrap justify-center gap-6 text-white/70 animate-slide-up delay-200 text-sm">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                            <i class="fas fa-robot text-xs"></i>
+                        </div>
+                        <span>AI Analysis</span>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <i class="fas fa-chart-line"></i>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                            <i class="fas fa-chart-line text-xs"></i>
+                        </div>
                         <span>Skill Extraction</span>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <i class="fas fa-briefcase"></i>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                            <i class="fas fa-briefcase text-xs"></i>
+                        </div>
                         <span>Job Matching</span>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Wave separator -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 80" class="w-full block" preserveAspectRatio="none">
+                <path fill="currentColor" class="text-surface-50 dark:text-surface-900" d="M0,48L80,42.7C160,37,320,27,480,32C640,37,800,59,960,58.7C1120,59,1280,37,1360,26.7L1440,16L1440,80L1360,80C1280,80,1120,80,960,80C800,80,640,80,480,80C320,80,160,80,80,80L0,80Z"></path>
+            </svg>
+        </div>
     </div>
 
+    {% if not profile %}
     <!-- Main Form Section -->
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-12 animate-slide-up">
+    <div class="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+        <div class="card p-8 md:p-10 animate-scale-in">
             {% if error %}
-            <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded-r-lg animate-fade-in">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <i class="fas fa-exclamation-triangle text-red-400"></i>
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-red-700">{{ error }}</p>
-                    </div>
-                </div>
+            <div class="flex items-start gap-3 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 animate-slide-down">
+                <i class="fas fa-exclamation-circle mt-0.5 text-red-400"></i>
+                <p class="text-sm font-medium">{{ error }}</p>
+            </div>
+            {% endif %}
+
+            {% if success %}
+            <div class="flex items-start gap-3 bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-xl mb-6 animate-slide-down">
+                <i class="fas fa-check-circle mt-0.5 text-emerald-400"></i>
+                <p class="text-sm font-medium">{{ success }}</p>
             </div>
             {% endif %}
 
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Get Started</h2>
-                <p class="text-gray-600">Connect your GitHub account to begin the analysis</p>
+                <h2 class="text-2xl font-bold text-gray-900 mb-1">Get Started</h2>
+                <p class="text-surface-500 text-sm">Connect your GitHub account to begin</p>
             </div>
 
             <!-- Authentication Tabs -->
             <div class="mb-8">
-                <div class="flex space-x-1 bg-gray-100 rounded-lg p-1">
-                    <button id="loginTab" class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors bg-white text-gray-900 shadow-sm">
-                        Login
+                <div class="flex bg-surface-100 rounded-xl p-1 gap-1">
+                    <button id="loginTab" class="flex-1 py-2.5 px-3 text-sm font-semibold rounded-lg transition-all duration-200 bg-white text-gray-900 shadow-sm">
+                        <i class="fas fa-sign-in-alt mr-1.5 text-xs"></i>Login
                     </button>
-                    <button id="registerTab" class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors text-gray-500 hover:text-gray-700">
-                        Register
+                    <button id="registerTab" class="flex-1 py-2.5 px-3 text-sm font-semibold rounded-lg transition-all duration-200 text-surface-500 hover:text-surface-700">
+                        <i class="fas fa-user-plus mr-1.5 text-xs"></i>Register
                     </button>
-                    <button id="githubTab" class="flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors text-gray-500 hover:text-gray-700">
-                        GitHub OAuth
+                    <button id="githubTab" class="flex-1 py-2.5 px-3 text-sm font-semibold rounded-lg transition-all duration-200 text-surface-500 hover:text-surface-700">
+                        <i class="fab fa-github mr-1.5 text-xs"></i>GitHub
                     </button>
                 </div>
             </div>
 
             <!-- Login Form -->
-            <div id="loginForm" class="space-y-6">
+            <div id="loginForm" class="space-y-5">
                 <form action="/auth/login" method="post" class="space-y-4">
-                    <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">
-                            <i class="fas fa-envelope mr-2"></i>Email
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fas fa-envelope mr-1.5 text-surface-400 text-xs"></i>Email
                         </label>
-                        <input
-                            type="email"
-                            name="email"
-                            required
-                            placeholder="Enter your email"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                        />
+                        <input type="email" name="email" required placeholder="you@example.com" class="input" />
                     </div>
-                    <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">
-                            <i class="fas fa-lock mr-2"></i>Password
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fas fa-lock mr-1.5 text-surface-400 text-xs"></i>Password
                         </label>
-                        <input
-                            type="password"
-                            name="password"
-                            required
-                            placeholder="Enter your password"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                        />
+                        <input type="password" name="password" required placeholder="Enter your password" class="input" />
                     </div>
-                    <button
-                        type="submit"
-                        class="w-full bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-primary-700 hover:to-secondary-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
-                    >
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        Login
+                    <button type="submit" class="btn btn-primary w-full py-3.5 text-sm mt-2">
+                        <i class="fas fa-arrow-right mr-2 text-xs"></i>Sign In
                     </button>
                 </form>
             </div>
 
             <!-- Register Form -->
-            <div id="registerForm" class="space-y-6 hidden">
+            <div id="registerForm" class="space-y-5 hidden">
                 <form action="/auth/register" method="post" class="space-y-4">
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="block text-sm font-semibold text-gray-700">
-                                <i class="fas fa-envelope mr-2"></i>Email
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                                <i class="fas fa-envelope mr-1.5 text-surface-400 text-xs"></i>Email
                             </label>
-                            <input
-                                type="email"
-                                name="email"
-                                required
-                                placeholder="Enter your email"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                            />
+                            <input type="email" name="email" required placeholder="you@example.com" class="input" />
                         </div>
-                        <div class="space-y-2">
-                            <label class="block text-sm font-semibold text-gray-700">
-                                <i class="fas fa-user mr-2"></i>Username
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                                <i class="fas fa-user mr-1.5 text-surface-400 text-xs"></i>Username
                             </label>
-                            <input
-                                type="text"
-                                name="username"
-                                required
-                                placeholder="Choose a username"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                            />
+                            <input type="text" name="username" required placeholder="username" class="input" />
                         </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">
-                            <i class="fas fa-id-card mr-2"></i>Full Name (Optional)
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fas fa-id-card mr-1.5 text-surface-400 text-xs"></i>Full Name <span class="text-surface-400 font-normal">(optional)</span>
                         </label>
-                        <input
-                            type="text"
-                            name="full_name"
-                            placeholder="Enter your full name"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                        />
+                        <input type="text" name="full_name" placeholder="Your full name" class="input" />
                     </div>
-                    <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-gray-700">
-                            <i class="fas fa-lock mr-2"></i>Password
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fas fa-lock mr-1.5 text-surface-400 text-xs"></i>Password
                         </label>
-                        <input
-                            type="password"
-                            name="password"
-                            required
-                            placeholder="Create a password"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                        />
+                        <input type="password" name="password" required placeholder="Create a strong password" class="input" />
                     </div>
-                    <button
-                        type="submit"
-                        class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-green-700 hover:to-emerald-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
-                    >
-                        <i class="fas fa-user-plus mr-2"></i>
-                        Create Account
+                    <button type="submit" class="btn btn-success w-full py-3.5 text-sm mt-2">
+                        <i class="fas fa-user-plus mr-2 text-xs"></i>Create Account
                     </button>
                 </form>
             </div>
 
             <!-- GitHub OAuth Form -->
-            <div id="githubForm" class="space-y-6 hidden">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div id="githubForm" class="hidden">
+                <div class="text-center py-6">
+                    <div class="w-16 h-16 bg-surface-900 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
                         <i class="fab fa-github text-white text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Login with GitHub</h3>
-                    <p class="text-gray-600 mb-6">Quick and secure authentication using your GitHub account</p>
-                    <a
-                        href="/auth/github"
-                        class="inline-flex items-center bg-gray-900 text-white py-4 px-8 rounded-lg font-semibold text-lg hover:bg-gray-800 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
-                    >
-                        <i class="fab fa-github mr-3"></i>
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">Login with GitHub</h3>
+                    <p class="text-surface-500 text-sm mb-6">Quick and secure authentication</p>
+                    <a href="/auth/github"
+                       class="btn inline-flex items-center bg-surface-900 text-white py-3.5 px-8 rounded-xl font-semibold hover:bg-surface-800 shadow-lg hover:shadow-xl transition-all">
+                        <i class="fab fa-github mr-2.5"></i>
                         Continue with GitHub
                     </a>
                 </div>
             </div>
 
-            <!-- Manual GitHub Analysis (for non-authenticated users) -->
-            <div class="mt-12 border-t border-gray-200 pt-8">
+            <!-- Manual GitHub Analysis -->
+            <div class="mt-10 pt-8 border-t border-gray-200">
                 <div class="text-center mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900">Or analyze without account</h3>
-                    <p class="text-gray-600 text-sm">Use GitHub token for one-time analysis</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-surface-400 mb-1">Or</p>
+                    <h3 class="text-lg font-bold text-gray-900">Analyze without account</h3>
+                    <p class="text-surface-500 text-sm">Use a GitHub token for one-time analysis</p>
                 </div>
-                
-                <form action="/fetch-profile" method="post" class="space-y-6">
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="block text-sm font-semibold text-gray-700">
-                                <i class="fab fa-github mr-2"></i>GitHub Username
-                            </label>
-                            <input
-                                type="text"
-                                name="username"
-                                required
-                                placeholder="Enter your GitHub username"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                            />
-                        </div>
-                        <div class="space-y-2">
-                            <label class="block text-sm font-semibold text-gray-700">
-                                <i class="fas fa-key mr-2"></i>GitHub Personal Access Token
-                            </label>
-                            <input
-                                type="password"
-                                name="token"
-                                required
-                                placeholder="ghp_xxxxxxxxxxxx"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
-                            />
-                        </div>
+
+                <form action="/fetch-profile" method="post" class="space-y-4" data-loading data-loading-text="Fetching GitHub Profile..." data-loading-subtext="Connecting to GitHub API">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fab fa-github mr-1.5 text-surface-400 text-xs"></i>GitHub Username
+                        </label>
+                        <input type="text" name="username" required placeholder="e.g. octocat" class="input" />
                     </div>
-                    
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <div class="flex items-start">
-                            <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
-                            <div class="text-sm text-blue-700">
-                                <p class="font-medium mb-1">Need a GitHub token?</p>
-                                <p>Go to GitHub Settings → Developer settings → Personal access tokens → Generate new token. 
-                                Select "repo" scope for private repositories or "public_repo" for public ones.</p>
-                            </div>
-                        </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <i class="fas fa-key mr-1.5 text-surface-400 text-xs"></i>Personal Access Token
+                        </label>
+                        <input type="password" name="token" required placeholder="ghp_xxxxxxxxxxxx" class="input" />
                     </div>
 
-                    <button
-                        type="submit"
-                        class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:from-orange-700 hover:to-red-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
-                    >
-                        <i class="fas fa-rocket mr-2"></i>
-                        Analyze My GitHub Profile
+                    <details class="group">
+                        <summary class="text-xs text-primary-600 font-medium cursor-pointer hover:text-primary-700 flex items-center gap-1">
+                            <i class="fas fa-info-circle"></i>
+                            How to get a GitHub token?
+                            <i class="fas fa-chevron-down text-[10px] group-open:rotate-180 transition-transform ml-auto"></i>
+                        </summary>
+                        <div class="mt-2 bg-primary-50 border border-primary-100 rounded-lg p-3 text-xs text-primary-700 leading-relaxed">
+                            Go to <strong>GitHub Settings → Developer settings → Personal access tokens → Generate new token</strong>.
+                            Select <code class="bg-primary-100 px-1 py-0.5 rounded">repo</code> scope for private repositories or <code class="bg-primary-100 px-1 py-0.5 rounded">public_repo</code> for public ones.
+                        </div>
+                    </details>
+
+                    <button type="submit" class="btn btn-accent w-full py-3.5 text-sm mt-1">
+                        <i class="fas fa-rocket mr-2 text-xs"></i>Analyze My GitHub Profile
                     </button>
                 </form>
             </div>
         </div>
     </div>
+    {% endif %}
 
     {% if profile %}
     <!-- Profile Section -->
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-        <div class="bg-white rounded-2xl shadow-xl p-8 animate-fade-in">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                <i class="fas fa-user-circle text-primary-600 mr-3"></i>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <div class="card p-8 animate-fade-in">
+            <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <i class="fas fa-user-circle text-primary-500"></i>
                 GitHub Profile
             </h2>
-            
-            <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 mb-8">
-                <img
-                    src="{{ profile.avatar_url }}"
-                    alt="Profile Picture"
-                    class="w-24 h-24 rounded-full border-4 border-primary-200 shadow-lg"
-                />
-                <div class="flex-1">
-                    <h3 class="text-2xl font-bold text-gray-900">{{ profile.name or profile.login }}</h3>
-                    <p class="text-gray-600 mt-1">{{ profile.bio or "No bio available." }}</p>
-                    <div class="flex flex-wrap gap-4 mt-3 text-sm text-gray-500">
-                        <span class="flex items-center">
-                            <i class="fas fa-code-branch mr-1"></i>
-                            {{ profile.public_repos }} repositories
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 mb-8">
+                <img src="{{ profile.avatar_url }}" alt="Profile Picture"
+                     class="w-20 h-20 rounded-2xl border-2 border-primary-100 shadow-lg" />
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-xl font-bold text-gray-900">{{ profile.name or profile.login }}</h3>
+                    <p class="text-surface-500 text-sm mt-0.5">{{ profile.bio or "No bio available." }}</p>
+                    <div class="flex flex-wrap gap-4 mt-3 text-xs text-surface-500">
+                        <span class="flex items-center gap-1">
+                            <i class="fas fa-code-branch text-primary-400"></i>
+                            {{ profile.public_repos }} repos
                         </span>
                         {% if profile.followers %}
-                        <span class="flex items-center">
-                            <i class="fas fa-users mr-1"></i>
+                        <span class="flex items-center gap-1">
+                            <i class="fas fa-users text-primary-400"></i>
                             {{ profile.followers }} followers
                         </span>
                         {% endif %}
                         {% if profile.location %}
-                        <span class="flex items-center">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
+                        <span class="flex items-center gap-1">
+                            <i class="fas fa-map-marker-alt text-primary-400"></i>
                             {{ profile.location }}
                         </span>
                         {% endif %}
@@ -287,19 +247,18 @@
                 </div>
             </div>
 
-            <!-- Repository Grid -->
-            <div class="mb-8">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-folder text-primary-600 mr-2"></i>
-                    Your Repositories
+            <!-- Repository Preview Grid -->
+            <div>
+                <h3 class="text-sm font-semibold text-surface-500 uppercase tracking-wider mb-3">
+                    Top Repositories
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {% for repo in repos[:6] %}
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:bg-gray-100 transition-colors">
-                        <h4 class="font-medium text-gray-900 mb-1">{{ repo.name }}</h4>
-                        <p class="text-sm text-gray-600 mb-2">{{ repo.description or "No description" }}</p>
+                    <div class="card-flat p-4">
+                        <h4 class="font-semibold text-gray-900 text-sm mb-1 truncate">{{ repo.name }}</h4>
+                        <p class="text-xs text-surface-500 mb-2 line-clamp-2">{{ repo.description or "No description" }}</p>
                         {% if repo.language %}
-                        <span class="inline-block bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full">
+                        <span class="inline-block bg-primary-50 text-primary-700 text-[11px] px-2 py-0.5 rounded-md font-medium">
                             {{ repo.language }}
                         </span>
                         {% endif %}
@@ -307,7 +266,7 @@
                     {% endfor %}
                 </div>
                 {% if repos|length > 6 %}
-                <p class="text-sm text-gray-500 mt-4 text-center">
+                <p class="text-xs text-surface-400 mt-3 text-center">
                     And {{ repos|length - 6 }} more repositories...
                 </p>
                 {% endif %}
@@ -316,40 +275,44 @@
     </div>
 
     <!-- Repository Selection -->
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        <div class="bg-white rounded-2xl shadow-xl p-8">
-            <form action="/analyze-readmes" method="post" class="space-y-6">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <div class="card p-8">
+            <form action="/analyze-readmes" method="post" class="space-y-6" data-loading data-loading-text="Fetching READMEs..." data-loading-subtext="Downloading from GitHub">
                 <input type="hidden" name="username" value="{{ profile.login }}" />
                 <input type="hidden" name="token" value="{{ token }}" />
 
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Select Repositories to Analyze</h3>
-                    <p class="text-gray-600">Choose the repositories you'd like us to analyze for skill extraction</p>
+                <div class="text-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-1">Select Repositories to Analyze</h3>
+                    <p class="text-surface-500 text-sm">Choose the repos you'd like AI to analyze</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs text-surface-400 font-medium" id="selectedCount">0 selected</span>
+                    <button type="button" onclick="toggleAll()" class="text-xs text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+                        Select All
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="repoGrid">
                     {% for repo in repos %}
-                    <label class="relative cursor-pointer">
-                        <input
-                            type="checkbox"
-                            name="selected_repos"
-                            value="{{ repo.name }}"
-                            class="sr-only peer"
-                        />
-                        <div class="border-2 border-gray-200 rounded-lg p-4 peer-checked:border-primary-500 peer-checked:bg-primary-50 hover:border-gray-300 transition-all duration-200 card-hover">
+                    <label class="relative cursor-pointer group">
+                        <input type="checkbox" name="selected_repos" value="{{ repo.name }}" class="sr-only peer repo-checkbox" />
+                        <div class="border-2 border-gray-200 rounded-xl p-4 peer-checked:border-primary-500 peer-checked:bg-primary-50/50 hover:border-surface-300 transition-all duration-200 h-full">
                             <div class="flex items-start justify-between mb-2">
-                                <h4 class="font-medium text-gray-900">{{ repo.name }}</h4>
-                                <div class="w-5 h-5 border-2 border-gray-300 rounded peer-checked:border-primary-500 peer-checked:bg-primary-500 flex items-center justify-center">
-                                    <i class="fas fa-check text-white text-xs opacity-0 peer-checked:opacity-100"></i>
+                                <h4 class="font-semibold text-gray-900 text-sm truncate flex-1 mr-2">{{ repo.name }}</h4>
+                                <div class="w-5 h-5 rounded-md border-2 border-surface-300 flex items-center justify-center flex-shrink-0 peer-checked:group-[]:border-primary-500 peer-checked:group-[]:bg-primary-500 transition-colors">
+                                    <i class="fas fa-check text-white text-[10px] opacity-0 peer-checked:group-[]:opacity-100 transition-opacity"></i>
                                 </div>
                             </div>
-                            <p class="text-sm text-gray-600 mb-2">{{ repo.description or "No description available" }}</p>
-                            <div class="flex items-center justify-between text-xs text-gray-500">
+                            <p class="text-xs text-surface-500 mb-2 line-clamp-2">{{ repo.description or "No description available" }}</p>
+                            <div class="flex items-center justify-between text-[11px] text-surface-400">
                                 {% if repo.language %}
-                                <span class="bg-gray-100 px-2 py-1 rounded">{{ repo.language }}</span>
+                                <span class="bg-surface-100 px-2 py-0.5 rounded-md font-medium">{{ repo.language }}</span>
+                                {% else %}
+                                <span></span>
                                 {% endif %}
-                                <span class="flex items-center">
-                                    <i class="fas fa-star mr-1"></i>{{ repo.stargazers_count or 0 }}
+                                <span class="flex items-center gap-1">
+                                    <i class="fas fa-star text-amber-400"></i>{{ repo.stargazers_count or 0 }}
                                 </span>
                             </div>
                         </div>
@@ -357,12 +320,9 @@
                     {% endfor %}
                 </div>
 
-                <div class="text-center">
-                    <button
-                        type="submit"
-                        class="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 px-8 rounded-lg font-semibold text-lg hover:from-green-700 hover:to-emerald-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl"
-                    >
-                        <i class="fas fa-search mr-2"></i>
+                <div class="text-center pt-2">
+                    <button type="submit" class="btn btn-success py-3.5 px-10 text-sm">
+                        <i class="fas fa-search-plus mr-2"></i>
                         Analyze Selected Repositories
                     </button>
                 </div>
@@ -373,42 +333,43 @@
 
     <!-- Features Section -->
     {% if not profile %}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div class="text-center mb-16">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p class="text-xs font-semibold uppercase tracking-wider text-primary-500 mb-2">How It Works</p>
+            <h2 class="text-3xl font-bold text-gray-900 mb-3">Three Simple Steps</h2>
+            <p class="text-surface-500 max-w-xl mx-auto">
                 Our AI-powered platform analyzes your GitHub repositories to unlock career insights
             </p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="text-center card-hover bg-white rounded-xl p-8 shadow-lg">
-                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-code text-white text-2xl"></i>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="card text-center p-8 animate-fade-in delay-100">
+                <div class="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-primary-500/20">
+                    <i class="fas fa-code text-white text-lg"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Analyze Repositories</h3>
-                <p class="text-gray-600">
-                    Connect your GitHub and select repositories for our AI to analyze your README files and extract technical skills.
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Analyze Repos</h3>
+                <p class="text-surface-500 text-sm leading-relaxed">
+                    Connect your GitHub and select repositories for AI to analyze your README files and extract skills.
                 </p>
             </div>
 
-            <div class="text-center card-hover bg-white rounded-xl p-8 shadow-lg">
-                <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-lightbulb text-white text-2xl"></i>
+            <div class="card text-center p-8 animate-fade-in delay-200">
+                <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-emerald-500/20">
+                    <i class="fas fa-lightbulb text-white text-lg"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Get Suggestions</h3>
-                <p class="text-gray-600">
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Get Suggestions</h3>
+                <p class="text-surface-500 text-sm leading-relaxed">
                     Receive personalized learning recommendations with curated YouTube tutorials to fill skill gaps.
                 </p>
             </div>
 
-            <div class="text-center card-hover bg-white rounded-xl p-8 shadow-lg">
-                <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-briefcase text-white text-2xl"></i>
+            <div class="card text-center p-8 animate-fade-in delay-300">
+                <div class="w-14 h-14 bg-gradient-to-br from-accent-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-accent-500/20">
+                    <i class="fas fa-briefcase text-white text-lg"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Match Jobs</h3>
-                <p class="text-gray-600">
-                    Discover job opportunities that perfectly match your skillset with company insights and role descriptions.
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Match Jobs</h3>
+                <p class="text-surface-500 text-sm leading-relaxed">
+                    Discover job opportunities that perfectly match your skillset with company insights.
                 </p>
             </div>
         </div>
@@ -418,36 +379,42 @@
 
 <!-- Tab Switching Script -->
 <script>
-    // Tab switching functionality
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
     const githubTab = document.getElementById('githubTab');
-    
+
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const githubForm = document.getElementById('githubForm');
-    
+
     function switchTab(activeTab, activeForm) {
-        // Remove active class from all tabs
         [loginTab, registerTab, githubTab].forEach(tab => {
             tab.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
-            tab.classList.add('text-gray-500', 'hover:text-gray-700');
+            tab.classList.add('text-surface-500', 'hover:text-surface-700');
         });
-        
-        // Hide all forms
-        [loginForm, registerForm, githubForm].forEach(form => {
-            form.classList.add('hidden');
-        });
-        
-        // Activate selected tab and form
+        [loginForm, registerForm, githubForm].forEach(form => form.classList.add('hidden'));
+
         activeTab.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
-        activeTab.classList.remove('text-gray-500', 'hover:text-gray-700');
+        activeTab.classList.remove('text-surface-500', 'hover:text-surface-700');
         activeForm.classList.remove('hidden');
     }
-    
-    // Event listeners
+
     loginTab.addEventListener('click', () => switchTab(loginTab, loginForm));
     registerTab.addEventListener('click', () => switchTab(registerTab, registerForm));
     githubTab.addEventListener('click', () => switchTab(githubTab, githubForm));
+
+    // Repo selection helpers
+    function updateSelectedCount() {
+        const count = document.querySelectorAll('.repo-checkbox:checked').length;
+        const el = document.getElementById('selectedCount');
+        if (el) el.textContent = count + ' selected';
+    }
+    function toggleAll() {
+        const boxes = document.querySelectorAll('.repo-checkbox');
+        const allChecked = [...boxes].every(b => b.checked);
+        boxes.forEach(b => b.checked = !allChecked);
+        updateSelectedCount();
+    }
+    document.querySelectorAll('.repo-checkbox').forEach(cb => cb.addEventListener('change', updateSelectedCount));
 </script>
 {% endblock %}
